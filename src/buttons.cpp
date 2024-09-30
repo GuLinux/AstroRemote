@@ -3,6 +3,7 @@
 #include "myfp2client.h"
 #include "pinout.h"
 #include "display.h"
+#include "nav.h"
 
 Buttons &Buttons::Instance = *new Buttons();
 
@@ -13,19 +14,12 @@ void Buttons::setup() {
   rightButton.setup(RIGHTBTN, INPUT_PULLDOWN, false);
   centralButton.setup(CENTRALBTN, INPUT_PULLDOWN, false);
 
-  upButton.attachClick([](){ Log.infoln("UP clicked"); MyFP2Client::Instance.relativeMove(200);});
-  downButton.attachClick([](){ Log.infoln("DOWN clicked"); MyFP2Client::Instance.relativeMove(-200);});
-  centralButton.attachClick([](){ Log.infoln("CENTRAL clicked"); MyFP2Client::Instance.abort(); });
-  centralButton.attachLongPressStart([](){ Log.infoln("CENTRAL longPress: will deep sleep"); });
-  centralButton.attachLongPressStop([](){
-          Log.traceln("Preparing to sleep. Pin 3 readout: %d", digitalRead(CENTRALBTN));
-          esp_deep_sleep_enable_gpio_wakeup(BIT(CENTRALBTN), ESP_GPIO_WAKEUP_GPIO_HIGH);
-          delay(100);
-          Display::Instance.sleep();
-          esp_deep_sleep_start();
-  });
-  leftButton.attachClick([](){ Log.infoln("LEFT clicked"); MyFP2Client::Instance.relativeMove(-20); });
-  rightButton.attachClick([](){ Log.infoln("RIGHT clicked"); MyFP2Client::Instance.relativeMove(20); });
+  upButton.attachClick([](){Nav::Instance.up(Nav::Single); });
+  downButton.attachClick([](){Nav::Instance.down(Nav::Single); });
+  leftButton.attachClick([](){Nav::Instance.left(Nav::Single); });
+  rightButton.attachClick([](){Nav::Instance.right(Nav::Single); });
+  centralButton.attachClick([](){Nav::Instance.center(Nav::Single); });
+  centralButton.attachClick([](){Nav::Instance.center(Nav::Long); });
 }
 
 void Buttons::loop() {
