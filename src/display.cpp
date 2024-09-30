@@ -7,6 +7,7 @@
 #define SCREEN_HEIGHT 32 // OLED display height, in pixels
 #define SCREEN_ADDRESS 0x3C
 
+Display &Display::Instance = *new Display();
 
 Display::Display() : display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1) {
 }

@@ -7,6 +7,7 @@
 
 class MyFP2Client {
 public:
+    static MyFP2Client &Instance;
     using OnPositionReceived = std::function<void(int32_t)>;
     using OnAckReceived = std::function<void()>;
     using OnMovingStatusReceived = std::function<void(bool)>;

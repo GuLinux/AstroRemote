@@ -6,6 +6,7 @@
 
 class Display {
 public:
+    static Display &Instance;
     Display();
     void setup();
     void sleep();

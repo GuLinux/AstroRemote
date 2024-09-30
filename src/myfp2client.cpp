@@ -3,6 +3,7 @@
 
 using namespace std::placeholders;
 
+MyFP2Client &MyFP2Client::Instance = *new MyFP2Client();
 
 void MyFP2Client::connect(const char *hostname, uint16_t port) {
     client.onData(std::bind(&MyFP2Client::onReceive, this, _1, _2, _3, _4));
