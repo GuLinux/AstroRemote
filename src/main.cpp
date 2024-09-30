@@ -10,7 +10,7 @@
 
 #include "pinout.h"
 #include <Wire.h>
-#include <esp_sleep.h>
+
 
 #include "myfp2client.h"
 #include "display.h"
@@ -49,23 +49,28 @@ void print_wakeup_reason(){
 void setup() {
   Serial.begin(115200);
   while(!Serial);
-  delay(5000);
+
   Log.begin(LOG_LEVEL_VERBOSE, &Serial);
   bufferedLogger.setup();
   Log.addHandler(&bufferedLogger);
 
+  Log.infoln("Starting setup");
+  Wire.begin(I2C_SDA, I2C_SCL);
+  display.setup();
+  delay(5000);
   print_wakeup_reason();
 
-  Log.infoln("Starting setup");
+
+
   LittleFS.begin();
   Settings::Instance.setup();
-  Wire.begin(I2C_SDA, I2C_SCL);
+
  
   uint8_t wifiSuccessful = setupWiFi(wifiMulti);
   Log.infoln("WiFi connected: %d, setting up OTA and buttons", wifiSuccessful);
   ArduinoOTAManager::Instance.setup();
   Buttons::Instance.setup();
-  display.setup();
+
 
   Log.infoln("Setup complete");
   MyFP2Client::Instance.onAckReceived([](){ Log.infoln("Ack received!");}).onPositionReceived([](int32_t position){ Log.infoln("Received position: %d", position); });
