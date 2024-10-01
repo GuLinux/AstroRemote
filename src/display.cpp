@@ -18,3 +18,7 @@ void Display::setup() {
     }
     display.display();
 }
+
+void Display::sleep() {
+    display.ssd1306_command(SSD1306_DISPLAYOFF);
+}

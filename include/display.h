@@ -8,6 +8,7 @@ class Display {
 public:
     Display();
     void setup();
+    void sleep();
 private:
     Adafruit_SSD1306 display;
 };

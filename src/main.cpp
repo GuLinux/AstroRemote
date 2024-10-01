@@ -15,6 +15,7 @@
 #include "myfp2client.h"
 #include "display.h"
 #include "wifi-setup.h"
+#include "settings.h"
 
 using namespace GuLinux;
 MyFP2Client myFP2;
@@ -51,8 +52,6 @@ void print_wakeup_reason(){
   }
 }
 
-
-
 void setup() {
   Serial.begin(115200);
   while(!Serial);
@@ -64,7 +63,8 @@ void setup() {
   print_wakeup_reason();
 
   Log.infoln("Starting setup");
-  LittleFS.begin(); 
+  LittleFS.begin();
+  Settings::Instance.setup();
   Wire.begin(I2C_SDA, I2C_SCL);
  
   uint8_t wifiSuccessful = setupWiFi(wifiMulti);
@@ -85,6 +85,7 @@ void setup() {
           Log.traceln("Preparing to sleep. Pin 3 readout: %d", digitalRead(CENTRALBTN));
           esp_deep_sleep_enable_gpio_wakeup(BIT(CENTRALBTN), ESP_GPIO_WAKEUP_GPIO_HIGH);
           delay(100);
+          display.sleep();
           esp_deep_sleep_start();
   });
   leftButton.attachClick([](){ Log.infoln("LEFT clicked"); myFP2.relativeMove(-20); });
