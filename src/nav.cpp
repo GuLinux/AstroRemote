@@ -6,101 +6,14 @@
 
 #include <ArduinoLog.h>
 #include <esp_sleep.h>
+#include "nav_parent.h"
+#include "nav_focuser.h"
 
 #define LOGPREFIX "[Nav] "
-#define LOGPREFIXMENUENTRY "[Nav::MenuEntry] "
 
 Nav &Nav::Instance = *new Nav();
 
 
-class Nav::MenuEntry::Parent : public Nav::MenuEntry {
-public:
-    Parent(const char *name, MenuEntry *parent=nullptr) : _name{name}, parent{parent} {
-    }
-
-    const char *name() const override { return _name; }
-    Parent *addChild(MenuEntry *child) {
-        this->children.push_back(child);
-        return this;
-    }
-    void draw() override {
-        if(children.size() > 0) {
-            Display::Instance.drawOption(name(), children[currentIndex]->name(), hasPrev(), hasNext());
-        } else {
-            Display::Instance.drawOption(name(), "This menu is empty", false, false);
-        }
-    }
-
-    void left() override {
-        if(parent) {
-            Nav::Instance.navigate(parent);
-        }
-    }
-    void right() override {
-        center();
-    }
-    void up() override {
-        if(hasPrev())
-            currentIndex--;
-        draw();
-    }
-
-    void down() {
-        if(hasNext())
-            currentIndex++;
-        draw();
-    }
-    void center() override {
-        Nav::Instance.navigate(children[currentIndex]);
-    }
-private:
-    bool hasPrev() const { return currentIndex > 0; }
-    bool hasNext() const { return currentIndex < children.size()-1; }
-    std::vector<MenuEntry*> children;
-    const char *_name;
-    uint8_t currentIndex = 0;
-    MenuEntry *parent;
-};
-
-
-class Nav::MenuEntry::Focuser: public Nav::MenuEntry {
-public:
-    Focuser(const String &name, const String &address, uint16_t port, MenuEntry *parent) : _name{name}, parent{parent} {
-
-    }
-
-    const char *name() const override {
-        return _name.c_str();
-    }
-    void draw() override {
-        Display::Instance.drawOption(name(), "Pos:12345\nSteps:10", false, false);
-    }
-    void left() override {
-        Log.infoln(LOGPREFIXMENUENTRY "focuser: left");
-    }
-    void right() override {
-        Log.infoln(LOGPREFIXMENUENTRY "focuser: right");
-    }
-    void up() override {
-        Log.infoln(LOGPREFIXMENUENTRY "focuser: up");
-    }
-    void down() override {
-        Log.infoln(LOGPREFIXMENUENTRY "focuser: down");
-    }
-    void center() override {
-        Log.infoln(LOGPREFIXMENUENTRY "focuser: center");
-        Nav::Instance.navigate(parent);
-    }
-    void onEnter() {
-        Log.infoln(LOGPREFIXMENUENTRY "focuser: onEnter");
-    }
-    void onExit() {
-        Log.infoln(LOGPREFIXMENUENTRY "focuser: onExit");
-    }
-private:
-    const String _name;
-    MenuEntry *parent;
-};
 
 Nav::Nav() {
 }
