@@ -4,22 +4,22 @@
 
 class Nav::MenuEntry::Parent : public Nav::MenuEntry {
 public:
-    Parent(const char *name, MenuEntry *parent=nullptr);
+    Parent(const String &name, MenuEntry *parent=nullptr);
 
-    const char *name() const override { return _name; }
+    const String name() const override { return _name; }
     Parent *addChild(MenuEntry *child);
     void draw() override;
 
-    void left() override;
-    void right() override;
-    void up() override;
-    void down();
-    void center() override;
+    void left(Nav::PressMode mode) override;
+    void right(Nav::PressMode mode) override;
+    void up(Nav::PressMode mode) override;
+    void down(Nav::PressMode mode);
+    void center(Nav::PressMode mode) override;
 private:
     bool hasPrev() const { return currentIndex > 0; }
     bool hasNext() const { return currentIndex < children.size()-1; }
     std::vector<MenuEntry*> children;
-    const char *_name;
+    const String _name;
     uint8_t currentIndex = 0;
     MenuEntry *parent;
 };

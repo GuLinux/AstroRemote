@@ -13,10 +13,6 @@ Settings &Settings::Instance = *new Settings();
 Settings::Settings() : wifiSettings(prefs, LittleFS, "FocuserRemote-") {
 }
 
-Settings::Focuser::Focuser(const String &name, const String &address, uint16_t port) : port{port} {
-    strcpy(this->name, name.c_str());
-    strcpy(this->address, address.c_str());
-}
 
 void Settings::setup() {
     prefs.begin("RemoteFocuser");

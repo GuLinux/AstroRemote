@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <functional>
 #include <vector>
+#include <WString.h>
 
 
 class Nav {
@@ -22,13 +23,13 @@ public:
 private:
     class MenuEntry {
     public:
-        virtual const char *name() const = 0;
+        virtual const String name() const = 0;
         virtual void draw() = 0;
-        virtual void left() = 0;
-        virtual void right() = 0;
-        virtual void up() = 0;
-        virtual void down() = 0;
-        virtual void center() = 0;
+        virtual void left(Nav::PressMode mode) = 0;
+        virtual void right(Nav::PressMode mode) = 0;
+        virtual void up(Nav::PressMode mode) = 0;
+        virtual void down(Nav::PressMode mode) = 0;
+        virtual void center(Nav::PressMode mode) = 0;
         virtual void onEnter() {}
         virtual void onExit() {}
         class Parent;

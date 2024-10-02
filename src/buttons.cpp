@@ -19,7 +19,8 @@ void Buttons::setup() {
   leftButton.attachClick([](){Nav::Instance.left(Nav::Single); });
   rightButton.attachClick([](){Nav::Instance.right(Nav::Single); });
   centralButton.attachClick([](){Nav::Instance.center(Nav::Single); });
-  centralButton.attachClick([](){Nav::Instance.center(Nav::Long); });
+
+  centralButton.attachLongPressStop([](){Nav::Instance.center(Nav::Long); });
 }
 
 void Buttons::loop() {

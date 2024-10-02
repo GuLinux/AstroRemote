@@ -11,9 +11,8 @@ public:
     void setup();
     void load();
     struct Focuser {
-        Focuser(const String &name, const String &address, uint16_t port);
-        char name[256];
-        char address[256];
+        String name;
+        String address;
         uint16_t port;
     };
     using Focusers = std::vector<Focuser>;

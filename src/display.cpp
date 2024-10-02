@@ -37,9 +37,36 @@ void Display::sleep() {
     display.ssd1306_command(SSD1306_DISPLAYOFF);
 }
 
+void Display::drawMessage(const char *title, const char *text, const char *footer) {
+    Log.traceln(LOGPREFIX "drawMessage: title=`%s`, text=`%s`, footer=`%s`", title, text, footer ? footer : "<null>");
+    display.clearDisplay();
+    display.setTextColor(WHITE);
+    display.setTextSize(1);
+    display.setFont(NULL);
+    drawCentered(title, 2);
+    drawCentered(text, 10);
+    if(footer) {
+        drawFooter(footer);
+    }
+    display.display();
+}
+
+void Display::drawFocuser(const char *name, uint32_t position, uint16_t steps, bool moving) {
+    Log.traceln(LOGPREFIX "drawFocuser: name=`%s`, position=`%d`, steps=`%d`, moving=%T", name, position, steps, moving);
+    display.clearDisplay();
+    display.setTextColor(WHITE);
+    display.setTextSize(1);
+    display.setFont(NULL);
+    drawCentered(name, 2);
+    display.setCursor(0, 10);
+    display.printf("Position: %d\n", position);
+    display.printf("Steps: %d\n", steps);
+    display.printf("Moving: %s\n", moving ? "true" : "false");
+    display.display();
+}
 
 void Display::drawOption(const char *title, const char *text, bool showLeftChevron, bool showRightChevron) {
-    Log.infoln(LOGPREFIX "drawing option: title=`%s`, text=`%s`, leftChevron=%T, rightChevron=%T", title, text, showLeftChevron, showRightChevron);
+    Log.traceln(LOGPREFIX "drawing option: title=`%s`, text=`%s`, leftChevron=%T, rightChevron=%T", title, text, showLeftChevron, showRightChevron);
     display.clearDisplay();
     display.setTextColor(WHITE);
     display.setTextSize(1);
@@ -59,10 +86,10 @@ void Display::drawOption(const char *title, const char *text, bool showLeftChevr
     // display.println(text);
     drawCentered(text, 13);
     display.display();
-    Log.infoln(LOGPREFIX "Option drawn");
 }
 
 void Display::drawFooter(const char *text) {
+    Log.traceln(LOGPREFIX "drawing footer: `%s`", text);
     display.setTextWrap(true);
     display.setCursor(0, 48);
     display.println(text);

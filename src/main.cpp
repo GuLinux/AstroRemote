@@ -18,12 +18,14 @@
 #include "wifi-setup.h"
 #include "settings.h"
 #include "buttons.h"
+#include "globals.h"
 
 using namespace GuLinux;
 
 WiFiMulti wifiMulti;
 AsyncBufferedTCPLogger bufferedLogger(9911, 100);
-Scheduler scheduler;
+Scheduler Global::scheduler;
+
 
 #define BTN_PULLUP true
 #define BTN_ACTIVELOW true
@@ -50,6 +52,7 @@ void setup() {
   Serial.begin(115200);
   while(!Serial);
 
+
   Log.begin(LOG_LEVEL_VERBOSE, &Serial);
   bufferedLogger.setup();
   Log.addHandler(&bufferedLogger);
@@ -74,7 +77,48 @@ void setup() {
 }
 
 void loop() {
+  
   ArduinoOTAManager::Instance.loop();
-  scheduler.execute();
+  Global::scheduler.execute();
   Buttons::Instance.loop();
+  if(Serial.available()) {
+      char c = Serial.read();
+      switch(c) {
+          case 'w':
+              Nav::Instance.up(Nav::Single);
+              break;
+          case 's':
+              Nav::Instance.down(Nav::Single);
+              break;
+          case 'a':
+              Nav::Instance.left(Nav::Single);
+              break;
+          case 'd':
+              Nav::Instance.right(Nav::Single);
+              break;
+          case 'e':
+              Nav::Instance.center(Nav::Single);
+              break;
+          case 'o':
+              Nav::Instance.center(Nav::Long);
+              break;
+          case 'i':
+              Nav::Instance.up(Nav::Long);
+              break;
+          case 'k':
+              Nav::Instance.down(Nav::Long);
+              break;
+          case 'j':
+              Nav::Instance.left(Nav::Long);
+              break;
+          case 'l':
+              Nav::Instance.right(Nav::Long);
+              break;
+          default:
+              Log.infoln("Serial Keyboard Navigation:");
+              Log.infoln("Short click: w(up), a(left), d(right), s(down), e(center)");
+              Log.infoln("Long click: i(up), j(left), l(right), k(down), i(center)");
+      }
+
+  }
 }

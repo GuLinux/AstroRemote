@@ -45,27 +45,27 @@ void Nav::navigate(MenuEntry *menuEntry) {
 
 void Nav::left(PressMode mode) {
     Log.infoln(LOGPREFIX "LEFT clicked: %d", mode);
-    menuEntry->left();
+    menuEntry->left(mode);
 }
 
 void Nav::right(PressMode mode) {
     Log.infoln(LOGPREFIX "RIGHT clicked: %d", mode);
-    menuEntry->right();
+    menuEntry->right(mode);
 }
 
 void Nav::up(PressMode mode) {
     Log.infoln(LOGPREFIX "UP clicked: %d", mode);
-    menuEntry->up();
+    menuEntry->up(mode);
 }
 
 void Nav::down(PressMode mode) {
     Log.infoln(LOGPREFIX "DOWN clicked: %d", mode);
-    menuEntry->down();
+    menuEntry->down(mode);
 }
 
 void Nav::center(PressMode mode) {
       Log.infoln(LOGPREFIX "CENTER clicked: %d", mode);
-      menuEntry->center();
+      menuEntry->center(mode);
 //    if(mode == Single) {
 
 //      MyFP2Client::Instance.abort();
