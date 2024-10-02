@@ -7,7 +7,6 @@
 
 class MyFP2Client {
 public:
-    static MyFP2Client &Instance;
     using OnPositionReceived = std::function<void(int32_t)>;
     using OnAckReceived = std::function<void()>;
     using OnMovingStatusReceived = std::function<void(bool)>;
@@ -15,7 +14,9 @@ public:
     using OnMotorSpeedReceived = std::function<void(uint8_t)>;
     using OnVersionReceived = std::function<void(String)>;
 
-    void connect(const char *hostname, uint16_t port=2020);
+    MyFP2Client(const char *hostname, uint16_t port=2020);
+
+    void connect();
 
     void relativeMove(int32_t steps);
     void absoluteMove(int32_t steps);
@@ -39,6 +40,8 @@ public:
     MyFP2Client &onVersionReceived(const OnVersionReceived&cb) { _onVersionReceived = cb; return *this; }
 
 private:
+    const char *hostname;
+    uint16_t port;
     OnPositionReceived _onPositionReceived;
     OnAckReceived _onAckReceived;
     OnMovingStatusReceived _onMovingStatusReceived;

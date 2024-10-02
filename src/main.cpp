@@ -71,19 +71,9 @@ void setup() {
 
 
   Log.infoln("Setup complete");
-  MyFP2Client::Instance.onAckReceived([](){ Log.infoln("Ack received!");}).onPositionReceived([](int32_t position){ Log.infoln("Received position: %d", position); });
-  MyFP2Client::Instance.connect("192.168.1.195");
-  
 }
 
 void loop() {
-  static uint64_t lastPosQuery = 0;
-  if(millis() - lastPosQuery > 10000 && MyFP2Client::Instance.connected()) {
-    lastPosQuery = millis();
-    MyFP2Client::Instance.getPosition();
-    MyFP2Client::Instance.getMovingStatus();
-  }
-  
   ArduinoOTAManager::Instance.loop();
   scheduler.execute();
   Buttons::Instance.loop();

@@ -13,6 +13,11 @@ Settings &Settings::Instance = *new Settings();
 Settings::Settings() : wifiSettings(prefs, LittleFS, "FocuserRemote-") {
 }
 
+Settings::Focuser::Focuser(const String &name, const String &address, uint16_t port) : port{port} {
+    strcpy(this->name, name.c_str());
+    strcpy(this->address, address.c_str());
+}
+
 void Settings::setup() {
     prefs.begin("RemoteFocuser");
     wifiSettings.setup();
@@ -51,12 +56,8 @@ void Settings::loadFocusers() {
     }
     _focusers.reserve(focusersDocument.as<JsonArray>().size());
     for(JsonObject focuser: focusersDocument.as<JsonArray>()) {
-        Focuser decoded{
-            focuser["name"],
-            focuser["address"],
-            (focuser["port"] | uint16_t(2020))
-        };
-        Log.infoln(LOGPREFIX R"(Adding focuser: {name="%s", address="%s", port=%d})", decoded.name, decoded.address, decoded.port);
-        _focusers.push_back(decoded);
+        _focusers.push_back({focuser["name"], focuser["address"], focuser["port"]});
+        Log.infoln(LOGPREFIX R"(Added focuser: {name="%s", address="%s", port=%d})", _focusers.back().name, _focusers.back().address, _focusers.back().port);
+
     }
 }

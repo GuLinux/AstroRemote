@@ -1,9 +1,12 @@
 #include "nav_focuser.h"
+
+
 #include <ArduinoLog.h>
 
 #define LOGPREFIX "[Nav::MenuEntry] "
 
-Nav::MenuEntry::Focuser::Focuser(const String &name, const String &address, uint16_t port, MenuEntry *parent) : _name{name}, parent{parent} {
+Nav::MenuEntry::Focuser::Focuser(const char *name, const char *address, uint16_t port, MenuEntry *parent)
+    : _name{name}, client{address, port}, parent{parent} {
 }
 
 void Nav::MenuEntry::Focuser::draw()

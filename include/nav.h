@@ -35,7 +35,7 @@ private:
         // class Back;
         class Focuser;
     };
-    MenuEntry *menuEntry;
+    MenuEntry *menuEntry = nullptr;
     void navigate(MenuEntry *menuEntry);
 };
 

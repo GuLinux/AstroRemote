@@ -10,8 +10,11 @@ public:
     Display();
     void setup();
     void sleep();
+    
     void drawOption(const char *title, const char *text, bool showLeftChevron=true, bool showRightChevron=true);
+    void drawFooter(const char *text);
 private:
+    void drawCentered(const char *text, int y);
     Adafruit_SSD1306 display;
 
     void drawMenu();

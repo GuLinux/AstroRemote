@@ -55,9 +55,27 @@ void Display::drawOption(const char *title, const char *text, bool showLeftChevr
     display.setCursor(122, 25);
     display.print(showRightChevron ? ">" : " ");
 
-    display.setTextWrap(0);
-    display.setCursor(13, 25);
-    display.println(text);
+    // display.setCursor(13, 25);
+    // display.println(text);
+    drawCentered(text, 13);
     display.display();
     Log.infoln(LOGPREFIX "Option drawn");
 }
+
+void Display::drawFooter(const char *text) {
+    display.setTextWrap(true);
+    display.setCursor(0, 48);
+    display.println(text);
+    display.display();
+}
+
+void Display::drawCentered(const char *text, int y) {
+    int16_t destX, destY;
+    uint16_t destW, destH;
+    display.getTextBounds(text, 0, 0, &destX, &destY, &destW, &destH);
+    display.setCursor(SCREEN_WIDTH/2 - destW/2, y);
+
+    display.setTextWrap(0);
+    display.print(text);
+}
+

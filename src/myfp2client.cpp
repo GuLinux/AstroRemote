@@ -3,15 +3,16 @@
 
 using namespace std::placeholders;
 
-MyFP2Client &MyFP2Client::Instance = *new MyFP2Client();
+MyFP2Client::MyFP2Client(const char *hostname, uint16_t port) : hostname{hostname}, port{port} {
+}
 
-void MyFP2Client::connect(const char *hostname, uint16_t port) {
+void MyFP2Client::connect() {
     client.onData(std::bind(&MyFP2Client::onReceive, this, _1, _2, _3, _4));
-    client.onConnect([hostname, port, this](void* arg, AsyncClient*){
+    client.onConnect([this](void* arg, AsyncClient*){
         Log.infoln("Client connected to %s:%d!", hostname, port);
         ack();
     });
-    client.onError([hostname, port](void*, AsyncClient*, int8_t error){
+    client.onError([this](void*, AsyncClient*, int8_t error){
         Log.errorln("Error connecting to %s:%d: %d", hostname, port, error);
     });
     Log.infoln("Connecting to %s:%d", hostname, port);
