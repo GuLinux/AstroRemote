@@ -20,35 +20,23 @@ public:
     void center(PressMode mode);
     void setup();
 private:
-    struct MenuEntry;
-    using MenuEntries = std::vector<MenuEntry>;
-    struct MenuEntry {
-        Nav &nav;
-        const char *name;
-        MenuEntries subEntries;
-        MenuEntry *parent = nullptr;
-        uint8_t currentSubentryIndex = 0;
-        MenuEntry &addEntry(const MenuEntry &entry);
-        void draw();
-
-        void left();
-        void right();
-        void up();
-        void down();
-        void enter();
-
-        bool hasNext() const;
-        bool hasPrev() const;
-
-        std::function<void()> onEnter;
-        std::function<void()> onLongPressEnter;
-        std::function<void()> onLeft;
-        std::function<void()> onRight;
-        std::function<void()> onUp;
-        std::function<void()> onDown;
+    class MenuEntry {
+    public:
+        virtual const char *name() const = 0;
+        virtual void draw() = 0;
+        virtual void left() = 0;
+        virtual void right() = 0;
+        virtual void up() = 0;
+        virtual void down() = 0;
+        virtual void center() = 0;
+        virtual void onEnter() {}
+        virtual void onExit() {}
+        class Parent;
+        // class Back;
+        class Focuser;
     };
-    MenuEntry rootMenu;
-    MenuEntry &currentMenuEntry;
+    MenuEntry *menuEntry;
+    void navigate(MenuEntry *menuEntry);
 };
 
 #endif
