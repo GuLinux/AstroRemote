@@ -16,10 +16,11 @@ public:
         uint16_t port;
     };
     using Focusers = std::vector<Focuser>;
-    Focusers focusers;
+    Focusers focusers() const { return _focusers; }
 private:
     Preferences prefs;
     GuLinux::WiFiSettings wifiSettings;
+    Focusers _focusers;
     void loadDefaults();
     void loadFocusers();
 };

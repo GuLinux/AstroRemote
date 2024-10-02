@@ -37,7 +37,7 @@ void Settings::loadDefaults() {
 }
 
 void Settings::loadFocusers() {
-    focusers.clear();
+    _focusers.clear();
     if(!LittleFS.exists(FOCUSERS_FILE_PATH)) {
         Log.infoln(LOGPREFIX FOCUSERS_FILE_PATH " not found, skipping loading focusers list");
         return;
@@ -49,6 +49,7 @@ void Settings::loadFocusers() {
         Log.errorln(LOGPREFIX "Error during deserialisation of " FOCUSERS_FILE_PATH " : %s (%d)", error.c_str(), error.code());
         return;
     }
+    _focusers.reserve(focusersDocument.as<JsonArray>().size());
     for(JsonObject focuser: focusersDocument.as<JsonArray>()) {
         Focuser decoded{
             focuser["name"],
@@ -56,6 +57,6 @@ void Settings::loadFocusers() {
             (focuser["port"] | uint16_t(2020))
         };
         Log.infoln(LOGPREFIX R"(Adding focuser: {name="%s", address="%s", port=%d})", decoded.name, decoded.address, decoded.port);
-        focusers.push_back(decoded);
+        _focusers.push_back(decoded);
     }
 }

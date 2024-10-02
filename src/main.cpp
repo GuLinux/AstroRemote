@@ -13,6 +13,7 @@
 
 
 #include "myfp2client.h"
+#include "nav.h"
 #include "display.h"
 #include "wifi-setup.h"
 #include "settings.h"
@@ -23,7 +24,6 @@ using namespace GuLinux;
 WiFiMulti wifiMulti;
 AsyncBufferedTCPLogger bufferedLogger(9911, 100);
 Scheduler scheduler;
-Display display;
 
 #define BTN_PULLUP true
 #define BTN_ACTIVELOW true
@@ -56,15 +56,13 @@ void setup() {
 
   Log.infoln("Starting setup");
   Wire.begin(I2C_SDA, I2C_SCL);
-  display.setup();
+  Display::Instance.setup();
   delay(5000);
   print_wakeup_reason();
 
-
-
   LittleFS.begin();
   Settings::Instance.setup();
-
+  Nav::Instance.setup();
  
   uint8_t wifiSuccessful = setupWiFi(wifiMulti);
   Log.infoln("WiFi connected: %d, setting up OTA and buttons", wifiSuccessful);
