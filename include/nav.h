@@ -5,6 +5,8 @@
 #include <functional>
 #include <vector>
 #include <WString.h>
+#include <TaskSchedulerDeclarations.h>
+#include <memory>
 
 
 class Nav {
@@ -33,11 +35,15 @@ private:
         virtual void onEnter() {}
         virtual void onExit() {}
         class Parent;
-        // class Back;
         class Focuser;
+        class Functional;
     };
     MenuEntry *menuEntry = nullptr;
     void navigate(MenuEntry *menuEntry);
+    std::unique_ptr<Task> oneshotTask;
+    std::unique_ptr<Task> sleepTask;
+    void sleep();
+    void autoSleep();
 };
 
 #endif

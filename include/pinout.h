@@ -7,6 +7,6 @@
 #define LEFTBTN 6
 #define RIGHTBTN 7
 
-#define I2C_SDA 9
-#define I2C_SCL 10
+#define I2C_SDA 10
+#define I2C_SCL 9
 #endif

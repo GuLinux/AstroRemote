@@ -17,9 +17,10 @@ public:
     };
     using Focusers = std::vector<Focuser>;
     Focusers focusers() const { return _focusers; }
+    GuLinux::WiFiSettings &wifiSettings() { return _wifiSettings; }
 private:
     Preferences prefs;
-    GuLinux::WiFiSettings wifiSettings;
+    GuLinux::WiFiSettings _wifiSettings;
     Focusers _focusers;
     void loadDefaults();
     void loadFocusers();

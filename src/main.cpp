@@ -19,6 +19,7 @@
 #include "settings.h"
 #include "buttons.h"
 #include "globals.h"
+#include <wifimanager.h>
 
 using namespace GuLinux;
 
@@ -29,7 +30,6 @@ Scheduler Global::scheduler;
 
 #define BTN_PULLUP true
 #define BTN_ACTIVELOW true
-
 
 void print_wakeup_reason(){
   esp_sleep_wakeup_cause_t wakeup_reason;
@@ -50,8 +50,7 @@ void print_wakeup_reason(){
 
 void setup() {
   Serial.begin(115200);
-  while(!Serial);
-
+  //while(!Serial);
 
   Log.begin(LOG_LEVEL_VERBOSE, &Serial);
   bufferedLogger.setup();
@@ -59,6 +58,12 @@ void setup() {
 
   Log.infoln("Starting setup");
   Wire.begin(I2C_SDA, I2C_SCL);
+//   for(int8_t address = 1; address < 127; address++ ) {
+//     Wire.beginTransmission(address);
+//     if(Wire.endTransmission() == 0) {
+//         Log.traceln("I2C Device found at address 0x%x", address);
+//     }
+//   }
   Display::Instance.setup();
   delay(5000);
   print_wakeup_reason();
@@ -66,9 +71,10 @@ void setup() {
   LittleFS.begin();
   Settings::Instance.setup();
   Nav::Instance.setup();
+  WiFiManager::Instance.setup(Global::scheduler, &Settings::Instance.wifiSettings());
  
-  uint8_t wifiSuccessful = setupWiFi(wifiMulti);
-  Log.infoln("WiFi connected: %d, setting up OTA and buttons", wifiSuccessful);
+//   uint8_t wifiSuccessful = setupWiFi(wifiMulti);
+//   Log.infoln("WiFi connected: %d, setting up OTA and buttons", wifiSuccessful);
   ArduinoOTAManager::Instance.setup();
   Buttons::Instance.setup();
 
@@ -77,7 +83,7 @@ void setup() {
 }
 
 void loop() {
-  
+  WiFiManager::Instance.loop();
   ArduinoOTAManager::Instance.loop();
   Global::scheduler.execute();
   Buttons::Instance.loop();

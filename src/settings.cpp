@@ -10,13 +10,13 @@
 
 Settings &Settings::Instance = *new Settings();
 
-Settings::Settings() : wifiSettings(prefs, LittleFS, "FocuserRemote-") {
+Settings::Settings() : _wifiSettings(prefs, LittleFS, "FocuserRemote-") {
 }
 
 
 void Settings::setup() {
     prefs.begin("RemoteFocuser");
-    wifiSettings.setup();
+    _wifiSettings.setup();
     load();
 }
 
@@ -28,12 +28,12 @@ void Settings::load() {
         return;
     }
     Log.infoln(LOGPREFIX "Loading settings");
-    wifiSettings.load();
+    _wifiSettings.load();
     loadFocusers();
 }
 
 void Settings::loadDefaults() {
-    wifiSettings.loadDefaults();
+    _wifiSettings.loadDefaults();
     loadFocusers();
 }
 
