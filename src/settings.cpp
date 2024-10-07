@@ -10,7 +10,7 @@
 
 Settings &Settings::Instance = *new Settings();
 
-Settings::Settings() : _wifiSettings(prefs, LittleFS, "FocuserRemote-") {
+Settings::Settings() : _wifiSettings(prefs, LittleFS, "FocuserRemote") {
 }
 
 

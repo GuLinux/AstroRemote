@@ -23,8 +23,11 @@
 
 using namespace GuLinux;
 
+void serialNav(char c);
 WiFiMulti wifiMulti;
-AsyncBufferedTCPLogger bufferedLogger(9911, 100);
+AsyncBufferedTCPLogger bufferedLogger(9911, 100, [](void*, AsyncClient*, void *data, size_t len){
+  serialNav(static_cast<char*>(data)[0]);
+});
 Scheduler Global::scheduler;
 
 
@@ -89,42 +92,55 @@ void loop() {
   Buttons::Instance.loop();
   if(Serial.available()) {
       char c = Serial.read();
-      switch(c) {
-          case 'w':
-              Nav::Instance.up(Nav::Single);
-              break;
-          case 's':
-              Nav::Instance.down(Nav::Single);
-              break;
-          case 'a':
-              Nav::Instance.left(Nav::Single);
-              break;
-          case 'd':
-              Nav::Instance.right(Nav::Single);
-              break;
-          case 'e':
-              Nav::Instance.center(Nav::Single);
-              break;
-          case 'o':
-              Nav::Instance.center(Nav::Long);
-              break;
-          case 'i':
-              Nav::Instance.up(Nav::Long);
-              break;
-          case 'k':
-              Nav::Instance.down(Nav::Long);
-              break;
-          case 'j':
-              Nav::Instance.left(Nav::Long);
-              break;
-          case 'l':
-              Nav::Instance.right(Nav::Long);
-              break;
-          default:
-              Log.infoln("Serial Keyboard Navigation:");
-              Log.infoln("Short click: w(up), a(left), d(right), s(down), e(center)");
-              Log.infoln("Long click: i(up), j(left), l(right), k(down), i(center)");
-      }
+      serialNav(c);
+  }
+}
 
+void serialNav(char c) {
+  switch(c) {
+      case 'w':
+          Log.infoln("[SerialNav] Navigating UP (Single)");
+          Nav::Instance.up(Nav::Single);
+          break;
+      case 's':
+          Log.infoln("[SerialNav] Navigating DOWN (Single)");
+          Nav::Instance.down(Nav::Single);
+          break;
+      case 'a':
+          Log.infoln("[SerialNav] Navigating LEFT (Single)");
+          Nav::Instance.left(Nav::Single);
+          break;
+      case 'd':
+          Log.infoln("[SerialNav] Navigating RIGHT (Single)");
+          Nav::Instance.right(Nav::Single);
+          break;
+      case 'e':
+          Log.infoln("[SerialNav] Navigating CENTER (Single)");
+          Nav::Instance.center(Nav::Single);
+          break;
+      case 'o':
+          Log.infoln("[SerialNav] Navigating CENTER (Long)");
+          Nav::Instance.center(Nav::Long);
+          break;
+      case 'i':
+          Log.infoln("[SerialNav] Navigating UP (Long)");
+          Nav::Instance.up(Nav::Long);
+          break;
+      case 'k':
+          Log.infoln("[SerialNav] Navigating DOWN (Long)");
+          Nav::Instance.down(Nav::Long);
+          break;
+      case 'j':
+          Log.infoln("[SerialNav] Navigating LEFT (Long)");
+          Nav::Instance.left(Nav::Long);
+          break;
+      case 'l':
+          Log.infoln("[SerialNav] Navigating RIGHT (Long)");
+          Nav::Instance.right(Nav::Long);
+          break;
+      default:
+          Log.infoln("[SerialNav] Serial Keyboard Navigation:");
+          Log.infoln("[SerialNav] Short click: w(up), a(left), d(right), s(down), e(center)");
+          Log.infoln("[SerialNav] Long click: i(up), j(left), l(right), k(down), i(center)");
   }
 }
