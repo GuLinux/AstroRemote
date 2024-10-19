@@ -12,11 +12,11 @@ public:
     Focuser(const String &name, const String &address, uint16_t port, MenuEntry *parent);
     const String name() const override { return _name; }
     void draw() override;
-    void left(Nav::PressMode mode) override;
-    void right(Nav::PressMode mode) override;
-    void up(Nav::PressMode mode) override;
-    void down(Nav::PressMode mode) override;
-    void center(Nav::PressMode mode) override;
+    void left(Buttons::Mode mode) override;
+    void right(Buttons::Mode mode) override;
+    void up(Buttons::Mode mode) override;
+    void down(Buttons::Mode mode) override;
+    void center(Buttons::Mode mode) override;
     void onEnter() override;
     void onExit() override;
 private:

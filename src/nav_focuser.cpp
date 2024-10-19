@@ -54,46 +54,46 @@ void Nav::MenuEntry::Focuser::draw()
     }
 }
 
-void Nav::MenuEntry::Focuser::left(Nav::PressMode mode) {
+void Nav::MenuEntry::Focuser::left(Buttons::Mode mode) {
     Log.infoln(LOGPREFIX "focuser: left, %d", mode);
-    if(mode == Single && client.status() == MyFP2Client::Connected && stepsIndex > 0) {
+    if(mode == Buttons::Single && client.status() == MyFP2Client::Connected && stepsIndex > 0) {
         stepsIndex--;
         Log.infoln(LOGPREFIX "Setting steps size to %d [index=%d]", steps(), stepsIndex);
     }
     draw();
 }
 
-void Nav::MenuEntry::Focuser::right(Nav::PressMode mode) {
+void Nav::MenuEntry::Focuser::right(Buttons::Mode mode) {
     Log.infoln(LOGPREFIX "focuser: right, %d", mode);
-    if(mode == Single && client.status() == MyFP2Client::Connected && stepsIndex < allowedSteps.size()-1) {
+    if(mode == Buttons::Single && client.status() == MyFP2Client::Connected && stepsIndex < allowedSteps.size()-1) {
         stepsIndex++;
         Log.infoln(LOGPREFIX "Setting steps size to %d [index=%d]", steps(), stepsIndex);
     }
     draw();
 }
 
-void Nav::MenuEntry::Focuser::up(Nav::PressMode mode) {
+void Nav::MenuEntry::Focuser::up(Buttons::Mode mode) {
     Log.infoln(LOGPREFIX "focuser: up, %d", mode);
-    if(mode == Single && client.status() == MyFP2Client::Connected) {
+    if(mode == Buttons::Single && client.status() == MyFP2Client::Connected) {
         Log.infoln(LOGPREFIX "Moving focuser by %d steps - current position: %d", position, -steps());
         client.relativeMove(-steps());
     }
-    if(mode == Long) {
+    if(mode == Buttons::Long) {
         Nav::Instance.navigate(parent);
     }
 }
 
-void Nav::MenuEntry::Focuser::down(Nav::PressMode mode) {
+void Nav::MenuEntry::Focuser::down(Buttons::Mode mode) {
     Log.infoln(LOGPREFIX "focuser: down, %d", mode);
-    if(mode == Single && client.status() == MyFP2Client::Connected) {
+    if(mode == Buttons::Single && client.status() == MyFP2Client::Connected) {
         Log.infoln(LOGPREFIX "Moving focuser by %d steps - current position: %d", position, steps());
         client.relativeMove(steps());
     }
 }
 
-void Nav::MenuEntry::Focuser::center(Nav::PressMode mode) {
+void Nav::MenuEntry::Focuser::center(Buttons::Mode mode) {
     Log.infoln(LOGPREFIX "focuser: center, %d", mode);
-    if(mode == Single) {
+    if(mode == Buttons::Single) {
         if(client.status() == MyFP2Client::Connected) {
             Log.infoln(LOGPREFIX "Aborting focuser motion");
             client.abort();

@@ -20,28 +20,28 @@ void Nav::MenuEntry::Parent::draw() {
     }
 }
 
-void Nav::MenuEntry::Parent::left(Nav::PressMode mode) {
+void Nav::MenuEntry::Parent::left(Buttons::Mode mode) {
     if(hasPrev())
         currentIndex--;
     draw();
 }
 
-void Nav::MenuEntry::Parent::right(Nav::PressMode mode) {
+void Nav::MenuEntry::Parent::right(Buttons::Mode mode) {
     if(hasNext())
         currentIndex++;
     draw();
 }
 
-void Nav::MenuEntry::Parent::up(Nav::PressMode mode) {
+void Nav::MenuEntry::Parent::up(Buttons::Mode mode) {
     if(parent) {
         Nav::Instance.navigate(parent);
     }
 }
 
-void Nav::MenuEntry::Parent::down(Nav::PressMode mode) {
+void Nav::MenuEntry::Parent::down(Buttons::Mode mode) {
     center(mode);
 }
 
-void Nav::MenuEntry::Parent::center(Nav::PressMode mode) {
+void Nav::MenuEntry::Parent::center(Buttons::Mode mode) {
     Nav::Instance.navigate(children[currentIndex]);
 }

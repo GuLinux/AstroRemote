@@ -10,11 +10,11 @@ public:
     Parent *addChild(MenuEntry *child);
     void draw() override;
 
-    void left(Nav::PressMode mode) override;
-    void right(Nav::PressMode mode) override;
-    void up(Nav::PressMode mode) override;
-    void down(Nav::PressMode mode);
-    void center(Nav::PressMode mode) override;
+    void left(Buttons::Mode mode) override;
+    void right(Buttons::Mode mode) override;
+    void up(Buttons::Mode mode) override;
+    void down(Buttons::Mode mode);
+    void center(Buttons::Mode mode) override;
 private:
     bool hasPrev() const { return currentIndex > 0; }
     bool hasNext() const { return currentIndex < children.size()-1; }

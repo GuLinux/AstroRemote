@@ -103,31 +103,31 @@ void Nav::autoSleep() {
     sleepTask->enableDelayed(sleepDelay);
 }
 
-void Nav::left(PressMode mode) {
+void Nav::left(Buttons::Mode mode) {
     Log.infoln(LOGPREFIX "LEFT clicked: %d", mode);
     menuEntry->left(mode);
     autoSleep();
 }
 
-void Nav::right(PressMode mode) {
+void Nav::right(Buttons::Mode mode) {
     Log.infoln(LOGPREFIX "RIGHT clicked: %d", mode);
     menuEntry->right(mode);
     autoSleep();
 }
 
-void Nav::up(PressMode mode) {
+void Nav::up(Buttons::Mode mode) {
     Log.infoln(LOGPREFIX "UP clicked: %d", mode);
     menuEntry->up(mode);
     autoSleep();
 }
 
-void Nav::down(PressMode mode) {
+void Nav::down(Buttons::Mode mode) {
     Log.infoln(LOGPREFIX "DOWN clicked: %d", mode);
     menuEntry->down(mode);
     autoSleep();
 }
 
-void Nav::center(PressMode mode) {
+void Nav::center(Buttons::Mode mode) {
     Log.infoln(LOGPREFIX "CENTER clicked: %d", mode);
     menuEntry->center(mode);
     autoSleep();

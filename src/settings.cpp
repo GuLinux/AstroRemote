@@ -18,6 +18,15 @@ void Settings::setup() {
     prefs.begin("RemoteFocuser");
     _wifiSettings.setup();
     load();
+    Log.infoln("Finished loading settings: ");
+    Log.infoln("WiFi: %d stations, hostname=%s", _wifiSettings.stations().size(), _wifiSettings.apConfiguration().essid);
+    for(auto station: _wifiSettings.stations()) {
+        Log.infoln(" - station: %s", station.essid);
+    }
+    Log.infoln("Focusers: %d", _focusers.size());
+    for(auto focuser: _focusers) {
+        Log.infoln(" - %s: %s:%d", focuser.name, focuser.address, focuser.port);
+    }
 }
 
 void Settings::load() {

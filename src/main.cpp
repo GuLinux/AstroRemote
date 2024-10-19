@@ -100,43 +100,43 @@ void serialNav(char c) {
   switch(c) {
       case 'w':
           Log.infoln("[SerialNav] Navigating UP (Single)");
-          Nav::Instance.up(Nav::Single);
+          Nav::Instance.up(Buttons::Single);
           break;
       case 's':
           Log.infoln("[SerialNav] Navigating DOWN (Single)");
-          Nav::Instance.down(Nav::Single);
+          Nav::Instance.down(Buttons::Single);
           break;
       case 'a':
           Log.infoln("[SerialNav] Navigating LEFT (Single)");
-          Nav::Instance.left(Nav::Single);
+          Nav::Instance.left(Buttons::Single);
           break;
       case 'd':
           Log.infoln("[SerialNav] Navigating RIGHT (Single)");
-          Nav::Instance.right(Nav::Single);
+          Nav::Instance.right(Buttons::Single);
           break;
       case 'e':
           Log.infoln("[SerialNav] Navigating CENTER (Single)");
-          Nav::Instance.center(Nav::Single);
+          Nav::Instance.center(Buttons::Single);
           break;
       case 'o':
           Log.infoln("[SerialNav] Navigating CENTER (Long)");
-          Nav::Instance.center(Nav::Long);
+          Nav::Instance.center(Buttons::Long);
           break;
       case 'i':
           Log.infoln("[SerialNav] Navigating UP (Long)");
-          Nav::Instance.up(Nav::Long);
+          Nav::Instance.up(Buttons::Long);
           break;
       case 'k':
           Log.infoln("[SerialNav] Navigating DOWN (Long)");
-          Nav::Instance.down(Nav::Long);
+          Nav::Instance.down(Buttons::Long);
           break;
       case 'j':
           Log.infoln("[SerialNav] Navigating LEFT (Long)");
-          Nav::Instance.left(Nav::Long);
+          Nav::Instance.left(Buttons::Long);
           break;
       case 'l':
           Log.infoln("[SerialNav] Navigating RIGHT (Long)");
-          Nav::Instance.right(Nav::Long);
+          Nav::Instance.right(Buttons::Long);
           break;
       default:
           Log.infoln("[SerialNav] Serial Keyboard Navigation:");
