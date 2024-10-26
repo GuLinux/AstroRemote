@@ -87,14 +87,14 @@ Display::Draw &Display::Draw::nav(const char *text, bool showLeftChevron, bool s
     return *this;
 }
 
-Display::Draw &Display::Draw::focuser(uint32_t position, uint16_t steps, bool moving) {
+Display::Draw &Display::Draw::focuser(uint32_t position, uint16_t steps, uint16_t multipliedSteps, bool moving) {
     Log.traceln(LOGPREFIX "focuser: positon=%d, steps=%d, moving=%d", position, steps, moving);
-    uint16_t yPos = display->getAscent()*2 + DISPLAY_INTERLINE*2;
+    uint16_t yPos = display->getAscent()*2 + DISPLAY_INTERLINE;
     display->setCursor(0, yPos);
     display->printf("Position: %d", position);
     yPos += display->getAscent() + DISPLAY_INTERLINE;
     display->setCursor(0, yPos);
-    display->printf("Steps: %d\n", steps);
+    display->printf("Steps: %d/%d\n", steps, multipliedSteps);
     yPos += display->getAscent() + DISPLAY_INTERLINE;
     display->setCursor(0, yPos);
     display->printf("Moving: %s\n", moving ? "true" : "false");

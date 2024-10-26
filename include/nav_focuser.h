@@ -12,7 +12,6 @@ public:
     Focuser(const String &name, const String &address, uint16_t port, MenuEntry *parent);
     void draw() override;
     void onButton(Buttons::Button button, Buttons::Mode mode);
-    
     void onEnter() override;
     void onExit() override;
 private:
@@ -29,7 +28,8 @@ private:
     void connect();
     void decreaseStepsSize();
     void increaseStepsSize();
-    void up(Buttons::Mode mode);
-    void down(Buttons::Mode mode);
+    enum Direction { In = -1, Out = 1 };
+    void move(Direction direction, uint8_t multiplier=1);
+    void abort();
     void center(Buttons::Mode mode);
 };

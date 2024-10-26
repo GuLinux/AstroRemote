@@ -6,6 +6,7 @@
 #include <ArduinoLog.h>
 
 #define LOGPREFIX "[Nav::MenuEntry] "
+#define STEPS_MULTIPLIER 10
 
 Nav::MenuEntry::Focuser::Focuser(const String &name, const String &address, uint16_t port, MenuEntry *parent)
     : MenuEntry{name, parent}, client{address, port} {
@@ -53,7 +54,7 @@ void Nav::MenuEntry::Focuser::draw()
 {
     Log.traceln(LOGPREFIX "draw: %s", _name.c_str());
     if(client.status() == MyFP2Client::Connected) {
-        Display::Instance.draw().title(_name.c_str()).focuser(position, steps(), moving);
+        Display::Instance.draw().title(_name.c_str()).focuser(position, steps(), steps()*STEPS_MULTIPLIER, moving);
     }
 }
 
@@ -66,10 +67,16 @@ void Nav::MenuEntry::Focuser::onButton(Buttons::Button button, Buttons::Mode mod
             if(mode == Buttons::Single) increaseStepsSize();
             break;
         case Buttons::Up:
-            up(mode);
+            move(In, STEPS_MULTIPLIER);
             break;
         case Buttons::Down:
-            down(mode);
+            move(Out, STEPS_MULTIPLIER);
+            break;
+        case Buttons::Left:
+            move(In);
+            break;
+        case Buttons::Right:
+            move(Out);
             break;
         case Buttons::Center:
             center(mode);
@@ -94,28 +101,24 @@ void Nav::MenuEntry::Focuser::increaseStepsSize() {
     draw();
 }
 
-void Nav::MenuEntry::Focuser::up(Buttons::Mode mode) {
-    Log.infoln(LOGPREFIX "focuser: up, %d", mode);
-    if(mode == Buttons::Single && client.status() == MyFP2Client::Connected) {
-        Log.infoln(LOGPREFIX "Moving focuser by %d steps - current position: %d", position, -steps());
-        client.relativeMove(-steps());
+void Nav::MenuEntry::Focuser::move(Direction direction, uint8_t multiplier) {
+    if(client.status() == MyFP2Client::Connected) {
+        int16_t movingSteps = steps() * multiplier * direction;
+        Log.infoln(LOGPREFIX "Moving focuser by %d steps - current position: %d", position, movingSteps);
+        client.relativeMove(movingSteps);
     }
 }
 
-void Nav::MenuEntry::Focuser::down(Buttons::Mode mode) {
-    Log.infoln(LOGPREFIX "focuser: down, %d", mode);
-    if(mode == Buttons::Single && client.status() == MyFP2Client::Connected) {
-        Log.infoln(LOGPREFIX "Moving focuser by %d steps - current position: %d", position, steps());
-        client.relativeMove(steps());
-    }
+void Nav::MenuEntry::Focuser::abort() {
+    Log.infoln(LOGPREFIX "Aborting focuser motion");
+    client.abort();
 }
 
 void Nav::MenuEntry::Focuser::center(Buttons::Mode mode) {
     Log.infoln(LOGPREFIX "focuser: center, %d", mode);
     if(mode == Buttons::Single) {
         if(client.status() == MyFP2Client::Connected) {
-            Log.infoln(LOGPREFIX "Aborting focuser motion");
-            client.abort();
+            abort();
         }
         if(client.status() == MyFP2Client::Disconnected) {
             Log.infoln(LOGPREFIX "reconnecting");
