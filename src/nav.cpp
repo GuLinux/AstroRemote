@@ -29,7 +29,7 @@ void Nav::setup() {
     MenuEntry::Parent *focusers = new MenuEntry::Parent("Focusers",root);
     MenuEntry::Parent *options = new MenuEntry::Parent("Options", root);
 
-    for(const Settings::Focuser &focuser: Settings::Instance.focusers()) {
+    for(const Settings::Device &focuser: Settings::Instance.focusers()) {
         focusers->addChild(new MenuEntry::Focuser(focuser.name, focuser.address, focuser.port, focusers));
     }
     options->addChild((new MenuEntry::Functional("WiFi Info", options))
