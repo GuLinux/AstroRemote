@@ -24,28 +24,23 @@ void Nav::MenuEntry::Parent::draw() {
     }
 }
 
-void Nav::MenuEntry::Parent::left(Buttons::Mode mode) {
-    if(hasPrev())
-        currentIndex--;
-    draw();
-}
-
-void Nav::MenuEntry::Parent::right(Buttons::Mode mode) {
-    if(hasNext())
-        currentIndex++;
-    draw();
-}
-
-void Nav::MenuEntry::Parent::up(Buttons::Mode mode) {
-    if(parent) {
-        Nav::Instance.navigate(parent);
+void Nav::MenuEntry::Parent::onButton(Buttons::Button button, Buttons::Mode mode) {
+    switch(button) {
+        case Buttons::Left:
+            if(hasPrev()) currentIndex--;
+            draw();
+            break;
+        case Buttons::Right:
+            if(hasNext()) currentIndex++;
+            draw();
+            break;
+        case Buttons::Up:
+            if(parent) Nav::Instance.navigate(parent);
+            break;
+        case Buttons::Down:
+        case Buttons::Center:
+            Nav::Instance.navigate(children[currentIndex]);
+            break;
     }
 }
 
-void Nav::MenuEntry::Parent::down(Buttons::Mode mode) {
-    center(mode);
-}
-
-void Nav::MenuEntry::Parent::center(Buttons::Mode mode) {
-    Nav::Instance.navigate(children[currentIndex]);
-}

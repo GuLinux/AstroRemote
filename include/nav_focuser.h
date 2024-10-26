@@ -12,11 +12,8 @@ public:
     Focuser(const String &name, const String &address, uint16_t port, MenuEntry *parent);
     const String name() const override { return _name; }
     void draw() override;
-    void left(Buttons::Mode mode) override;
-    void right(Buttons::Mode mode) override;
-    void up(Buttons::Mode mode) override;
-    void down(Buttons::Mode mode) override;
-    void center(Buttons::Mode mode) override;
+    void onButton(Buttons::Button button, Buttons::Mode mode);
+    
     void onEnter() override;
     void onExit() override;
 private:
@@ -32,4 +29,9 @@ private:
     bool waitingStatus = false;
     bool waitingPosition = false;
     void connect();
+    void left(Buttons::Mode mode);
+    void right(Buttons::Mode mode);
+    void up(Buttons::Mode mode);
+    void down(Buttons::Mode mode);
+    void center(Buttons::Mode mode);
 };

@@ -54,21 +54,5 @@ void Buttons::onClick(Button button, Mode mode) {
     { DownRight, "DownRight" },
   };
   Log.traceln("Button clicked: button=%s, mode=%s", buttons_map.at(button), modes_map.at(mode));
-  switch(button) {
-    case Up:
-      Nav::Instance.up(mode);
-      break;
-    case Down:
-      Nav::Instance.down(mode);
-      break;
-    case Left:
-      Nav::Instance.left(mode);
-      break;
-    case Right:
-      Nav::Instance.right(mode);
-      break;
-    case Center:
-      Nav::Instance.center(mode);
-      break;
-  }
+  Nav::Instance.onButton(button, mode);
 }

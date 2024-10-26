@@ -97,50 +97,24 @@ void loop() {
 }
 
 void serialNav(char c) {
-  switch(c) {
-      case 'w':
-          Log.infoln("[SerialNav] Navigating UP (Single)");
-          Nav::Instance.up(Buttons::Single);
-          break;
-      case 's':
-          Log.infoln("[SerialNav] Navigating DOWN (Single)");
-          Nav::Instance.down(Buttons::Single);
-          break;
-      case 'a':
-          Log.infoln("[SerialNav] Navigating LEFT (Single)");
-          Nav::Instance.left(Buttons::Single);
-          break;
-      case 'd':
-          Log.infoln("[SerialNav] Navigating RIGHT (Single)");
-          Nav::Instance.right(Buttons::Single);
-          break;
-      case 'e':
-          Log.infoln("[SerialNav] Navigating CENTER (Single)");
-          Nav::Instance.center(Buttons::Single);
-          break;
-      case 'o':
-          Log.infoln("[SerialNav] Navigating CENTER (Long)");
-          Nav::Instance.center(Buttons::Long);
-          break;
-      case 'i':
-          Log.infoln("[SerialNav] Navigating UP (Long)");
-          Nav::Instance.up(Buttons::Long);
-          break;
-      case 'k':
-          Log.infoln("[SerialNav] Navigating DOWN (Long)");
-          Nav::Instance.down(Buttons::Long);
-          break;
-      case 'j':
-          Log.infoln("[SerialNav] Navigating LEFT (Long)");
-          Nav::Instance.left(Buttons::Long);
-          break;
-      case 'l':
-          Log.infoln("[SerialNav] Navigating RIGHT (Long)");
-          Nav::Instance.right(Buttons::Long);
-          break;
-      default:
-          Log.infoln("[SerialNav] Serial Keyboard Navigation:");
-          Log.infoln("[SerialNav] Short click: w(up), a(left), d(right), s(down), e(center)");
-          Log.infoln("[SerialNav] Long click: i(up), j(left), l(right), k(down), i(center)");
-  }
+    static const std::unordered_map<char, std::pair<Buttons::Button, Buttons::Mode>> buttonsMap {
+      {'w', {Buttons::Up, Buttons::Single}},
+      {'s', {Buttons::Down, Buttons::Single}},
+      {'a', {Buttons::Left, Buttons::Single}},
+      {'d', {Buttons::Right, Buttons::Single}},
+      {'e', {Buttons::Center, Buttons::Single}},
+      
+      {'o', {Buttons::Center, Buttons::Double}},
+      {'i', {Buttons::Up, Buttons::Double}},
+      {'k', {Buttons::Down, Buttons::Double}},
+      {'j', {Buttons::Left, Buttons::Double}},
+      {'l', {Buttons::Right, Buttons::Double}},
+    };
+    if(buttonsMap.count(c)) {
+      Nav::Instance.onButton(buttonsMap.at(c).first, buttonsMap.at(c).second);
+    } else {
+      Log.infoln("[SerialNav] Serial Keyboard Navigation:");
+      Log.infoln("[SerialNav] Short click: w(up), a(left), d(right), s(down), e(center)");
+      Log.infoln("[SerialNav] Long click: i(up), j(left), l(right), k(down), i(center)");
+    }
 }

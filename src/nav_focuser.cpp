@@ -57,6 +57,27 @@ void Nav::MenuEntry::Focuser::draw()
     }
 }
 
+void Nav::MenuEntry::Focuser::onButton(Buttons::Button button, Buttons::Mode mode) {
+    switch (button) {
+        case Buttons::Left:
+            left(mode);
+            break;
+        case Buttons::Right:
+            right(mode);
+            break;
+        case Buttons::Up:
+            up(mode);
+            break;
+        case Buttons::Down:
+            down(mode);
+            break;
+        case Buttons::Center:
+            center(mode);
+            break;
+
+    }
+}
+
 void Nav::MenuEntry::Focuser::left(Buttons::Mode mode) {
     Log.infoln(LOGPREFIX "focuser: left, %d", mode);
     if(mode == Buttons::Single && client.status() == MyFP2Client::Connected && stepsIndex > 0) {

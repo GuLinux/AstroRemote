@@ -15,23 +15,14 @@ public:
     static Nav &Instance;
 
     Nav();
-
-    void left(Buttons::Mode mode);
-    void right(Buttons::Mode mode);
-    void up(Buttons::Mode mode);
-    void down(Buttons::Mode mode);
-    void center(Buttons::Mode mode);
+    void onButton(Buttons::Button button, Buttons::Mode mode);
     void setup();
 private:
     class MenuEntry {
     public:
         virtual const String name() const = 0;
         virtual void draw() = 0;
-        virtual void left(Buttons::Mode mode) = 0;
-        virtual void right(Buttons::Mode mode) = 0;
-        virtual void up(Buttons::Mode mode) = 0;
-        virtual void down(Buttons::Mode mode) = 0;
-        virtual void center(Buttons::Mode mode) = 0;
+        virtual void onButton(Buttons::Button button, Buttons::Mode mode) = 0;
         virtual void onEnter() {}
         virtual void onExit() {}
         class Parent;
