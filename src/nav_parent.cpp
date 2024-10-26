@@ -2,7 +2,7 @@
 
 
 
-Nav::MenuEntry::Parent::Parent(const String &name, MenuEntry * parent) : _name{name}, parent{parent} {
+Nav::MenuEntry::Parent::Parent(const String &name, MenuEntry * parent) : MenuEntry{name, parent} {
 }
 
 Nav::MenuEntry::Parent *Nav::MenuEntry::Parent::addChild(MenuEntry *child) {
@@ -27,17 +27,15 @@ void Nav::MenuEntry::Parent::draw() {
 void Nav::MenuEntry::Parent::onButton(Buttons::Button button, Buttons::Mode mode) {
     switch(button) {
         case Buttons::Left:
+        case Buttons::Up:
             if(hasPrev()) currentIndex--;
             draw();
             break;
         case Buttons::Right:
+        case Buttons::Down:
             if(hasNext()) currentIndex++;
             draw();
             break;
-        case Buttons::Up:
-            if(parent) Nav::Instance.navigate(parent);
-            break;
-        case Buttons::Down:
         case Buttons::Center:
             Nav::Instance.navigate(children[currentIndex]);
             break;

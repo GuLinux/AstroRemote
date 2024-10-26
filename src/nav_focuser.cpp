@@ -8,8 +8,8 @@
 #define LOGPREFIX "[Nav::MenuEntry] "
 
 Nav::MenuEntry::Focuser::Focuser(const String &name, const String &address, uint16_t port, MenuEntry *parent)
-    : _name{name}, client{address, port}, parent{parent} {
-        Log.infoln(LOGPREFIX "Creating focuser: name=%s, address=%s:%d", _name.c_str(), address, port);
+    : MenuEntry{name, parent}, client{address, port} {
+        Log.infoln(LOGPREFIX "Creating focuser: name=%s, address=%s:%d", name.c_str(), address, port);
         client
             .onConnected([this](){ draw(); })
             .onDisconnected([this](){
@@ -59,11 +59,11 @@ void Nav::MenuEntry::Focuser::draw()
 
 void Nav::MenuEntry::Focuser::onButton(Buttons::Button button, Buttons::Mode mode) {
     switch (button) {
-        case Buttons::Left:
-            left(mode);
+        case Buttons::DownLeft:
+            if(mode == Buttons::Single) decreaseStepsSize();
             break;
-        case Buttons::Right:
-            right(mode);
+        case Buttons::DownRight:
+            if(mode == Buttons::Single) increaseStepsSize();
             break;
         case Buttons::Up:
             up(mode);
@@ -78,18 +78,16 @@ void Nav::MenuEntry::Focuser::onButton(Buttons::Button button, Buttons::Mode mod
     }
 }
 
-void Nav::MenuEntry::Focuser::left(Buttons::Mode mode) {
-    Log.infoln(LOGPREFIX "focuser: left, %d", mode);
-    if(mode == Buttons::Single && client.status() == MyFP2Client::Connected && stepsIndex > 0) {
+void Nav::MenuEntry::Focuser::decreaseStepsSize() {
+    if(client.status() == MyFP2Client::Connected && stepsIndex > 0) {
         stepsIndex--;
         Log.infoln(LOGPREFIX "Setting steps size to %d [index=%d]", steps(), stepsIndex);
     }
     draw();
 }
 
-void Nav::MenuEntry::Focuser::right(Buttons::Mode mode) {
-    Log.infoln(LOGPREFIX "focuser: right, %d", mode);
-    if(mode == Buttons::Single && client.status() == MyFP2Client::Connected && stepsIndex < allowedSteps.size()-1) {
+void Nav::MenuEntry::Focuser::increaseStepsSize() {
+    if(client.status() == MyFP2Client::Connected && stepsIndex < allowedSteps.size()-1) {
         stepsIndex++;
         Log.infoln(LOGPREFIX "Setting steps size to %d [index=%d]", steps(), stepsIndex);
     }
@@ -101,9 +99,6 @@ void Nav::MenuEntry::Focuser::up(Buttons::Mode mode) {
     if(mode == Buttons::Single && client.status() == MyFP2Client::Connected) {
         Log.infoln(LOGPREFIX "Moving focuser by %d steps - current position: %d", position, -steps());
         client.relativeMove(-steps());
-    }
-    if(mode == Buttons::Long) {
-        Nav::Instance.navigate(parent);
     }
 }
 

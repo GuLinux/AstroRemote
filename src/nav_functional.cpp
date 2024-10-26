@@ -1,6 +1,10 @@
 #include "nav_functional.h"
 
-void Nav::MenuEntry::Functional::draw() {
+Nav::MenuEntry::Functional::Functional(const String &name, MenuEntry *parent) : MenuEntry{name, parent} {
+}
+
+void Nav::MenuEntry::Functional::draw()
+{
     invoke(Draw);
 }
 

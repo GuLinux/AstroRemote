@@ -20,7 +20,8 @@ public:
 private:
     class MenuEntry {
     public:
-        virtual const String name() const = 0;
+        const String name() const { return _name; };
+        MenuEntry *parent() const { return _parent; };
         virtual void draw() = 0;
         virtual void onButton(Buttons::Button button, Buttons::Mode mode) = 0;
         virtual void onEnter() {}
@@ -28,8 +29,14 @@ private:
         class Parent;
         class Focuser;
         class Functional;
+    protected:
+        MenuEntry(const String &name, MenuEntry *parent=nullptr) : _name{name}, _parent{parent} {}
+    private:
+        const String _name;
+        MenuEntry *_parent;
     };
     MenuEntry *menuEntry = nullptr;
+    MenuEntry::Parent * root;
     void navigate(MenuEntry *menuEntry);
     std::unique_ptr<Task> oneshotTask;
     std::unique_ptr<Task> sleepTask;

@@ -6,34 +6,37 @@
 #include "nav.h"
 #include <unordered_map>
 
+using namespace std::placeholders;
+
 Buttons &Buttons::Instance = *new Buttons();
 
-void Buttons::setup() {
-  upButton.setup(UPBTN, INPUT_PULLDOWN, false);
-  downButton.setup(DOWNBTN, INPUT_PULLDOWN, false);
-  leftButton.setup(LEFTBTN, INPUT_PULLDOWN, false);
-  rightButton.setup(RIGHTBTN, INPUT_PULLDOWN, false);
-  centralButton.setup(CENTRALBTN, INPUT_PULLDOWN, false);
-
-  upButton.attachClick([](){ Buttons::onClick(Up, Single); });
-  downButton.attachClick([](){ Buttons::onClick(Down, Single); });
-  leftButton.attachClick([](){ Buttons::onClick(Left, Single); });
-  rightButton.attachClick([](){ Buttons::onClick(Right, Single); });
-  centralButton.attachClick([](){ Buttons::onClick(Center, Single); });
-  centralButton.attachLongPressStop([](){ Buttons::onClick(Center, Long); });
-  upButton.attachLongPressStop([](){ Buttons::onClick(Up, Long); });
-  downButton.attachLongPressStop([](){ Buttons::onClick(Down, Long); });
-  leftButton.attachLongPressStop([](){ Buttons::onClick(Left, Long); });
-  rightButton.attachLongPressStop([](){ Buttons::onClick(Right, Long); });
+Buttons::Buttons() : buttons{{
+    { Up, UPBTN},
+    { Left, LEFTBTN},
+    { Right, RIGHTBTN},
+    { Down, DOWNBTN},
+    { Center, CENTRALBTN},
+    { UpLeft, UPLEFT},
+    { UpRight, UPRIGHT},
+    { DownLeft, DOWNLEFT},
+    { DownRight, DOWNRIGHT}
+  }}
+{
 }
 
-void Buttons::loop() {
-  upButton.tick();
-  downButton.tick();
-  leftButton.tick();
-  centralButton.tick();
-  rightButton.tick();
+void Buttons::setup() {
+  std::for_each(buttons.begin(), buttons.end(), std::bind(&ButtonInfo::setup, _1));
+}
 
+void Buttons::ButtonInfo::setup() {
+    oneButton.setup(pin, INPUT_PULLDOWN, false);
+    oneButton.attachClick([](void* p){ Buttons::onClick(((ButtonInfo*)p)->type, Single); }, this);
+    oneButton.attachLongPressStop([](void* p){ Buttons::onClick(((ButtonInfo*)p)->type, Long); }, this);
+}
+
+
+void Buttons::loop() {
+  std::for_each(buttons.begin(), buttons.end(), std::bind(&ButtonInfo::tick, _1));
 }
 
 void Buttons::onClick(Button button, Mode mode) {
@@ -56,3 +59,4 @@ void Buttons::onClick(Button button, Mode mode) {
   Log.traceln("Button clicked: button=%s, mode=%s", buttons_map.at(button), modes_map.at(mode));
   Nav::Instance.onButton(button, mode);
 }
+

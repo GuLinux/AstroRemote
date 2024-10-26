@@ -7,9 +7,8 @@
 
 class Nav::MenuEntry::Functional : public Nav::MenuEntry {
 public:
-    Functional(const String &name) : _name{name} {}
+    Functional(const String &name, MenuEntry *parent);
     using Callback = std::function<void()>;
-    const String name() const override { return _name; }
     void draw() override;
     void onButton(Buttons::Button button, Buttons::Mode mode);
     void onEnter() override;
