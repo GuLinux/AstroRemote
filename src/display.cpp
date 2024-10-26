@@ -27,10 +27,10 @@ void Display::setup() {
     display.setFontMode(0);
     display.setFont(u8g2_font_6x12_t_symbols);
     display.setFontPosTop();
-    display.setCursor(remote_control_width + 5, 5);
+    display.setCursor(remote_control_width + 5, display.getAscent() + DISPLAY_INTERLINE*3);
+    display.println("Astro");
+    display.setCursor(remote_control_width + 5, display.getAscent()*2 + DISPLAY_INTERLINE*4);
     display.println("Remote");
-    display.setCursor(remote_control_width + 5, 25);
-    display.println("Focuser");
     display.drawXBM(1, 1, remote_control_width, remote_control_height, remote_control_bits);
     display.sendBuffer();
 }
