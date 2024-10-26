@@ -21,6 +21,10 @@ void Buttons::setup() {
   rightButton.attachClick([](){ Buttons::onClick(Right, Single); });
   centralButton.attachClick([](){ Buttons::onClick(Center, Single); });
   centralButton.attachLongPressStop([](){ Buttons::onClick(Center, Long); });
+  upButton.attachLongPressStop([](){ Buttons::onClick(Up, Long); });
+  downButton.attachLongPressStop([](){ Buttons::onClick(Down, Long); });
+  leftButton.attachLongPressStop([](){ Buttons::onClick(Left, Long); });
+  rightButton.attachLongPressStop([](){ Buttons::onClick(Right, Long); });
 }
 
 void Buttons::loop() {

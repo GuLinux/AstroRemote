@@ -14,15 +14,18 @@ Nav::MenuEntry::Focuser::Focuser(const String &name, const String &address, uint
             .onConnected([this](){ draw(); })
             .onDisconnected([this](){
                 if(client.status() != MyFP2Client::Disconnected) {
-                    Display::Instance.drawMessage(_name.c_str(), "Disconnected!", "<center> to connect");
+                    Display::Instance.draw().title(_name.c_str()).message({"Disconnected!"}).footer({"<center> to connect"});
                 }
             })
             .onError([this](uint8_t, const char *error){
-                char message[256];
-                sprintf(message, "Connection error:\n%s", error);
-                Display::Instance.drawMessage(_name.c_str(), message, "<center> to connect");
+                Display::Instance.draw().title(_name.c_str()).message({"Connection error", error}).footer({"<center> to connect"});
             })
-            .onPositionReceived([this](uint32_t position){ this->position = position; waitingPosition = false; draw(); })
+            .onPositionReceived([this](uint32_t position){
+                Log.traceln(LOGPREFIX "on position received: position=%d", position);
+                this->position = position;
+                waitingPosition = false;
+                draw();
+            })
             .onMovingStatusReceived([this](bool moving){
                 this->moving = moving;
                 waitingStatus = false;
@@ -50,7 +53,7 @@ void Nav::MenuEntry::Focuser::draw()
 {
     Log.traceln(LOGPREFIX "draw: %s", _name.c_str());
     if(client.status() == MyFP2Client::Connected) {
-        Display::Instance.drawFocuser(_name.c_str(), position, steps(), moving);
+        Display::Instance.draw().title(_name.c_str()).focuser(position, steps(), moving);
     }
 }
 
@@ -119,7 +122,7 @@ void Nav::MenuEntry::Focuser::onExit() {
 void Nav::MenuEntry::Focuser::connect()
 {
     if(client.status() == MyFP2Client::Disconnected) {
-        Display::Instance.drawMessage(_name.c_str(), "Connecting...");
+        Display::Instance.draw().title(_name.c_str()).message({"Connecting..."});
         client.connect();
     }
 }

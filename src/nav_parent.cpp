@@ -12,11 +12,15 @@ Nav::MenuEntry::Parent *Nav::MenuEntry::Parent::addChild(MenuEntry *child) {
 
 void Nav::MenuEntry::Parent::draw() {
     if(children.size() > 0) {
-        Display::Instance.drawOption(_name.c_str(), children[currentIndex]->name().c_str(), hasPrev(), hasNext());
-        Display::Instance.drawFooter("Press Up to go back, down/enter activates.");
+        Display::Instance.draw()
+            .title(_name.c_str())
+            .nav(children[currentIndex]->name().c_str(), hasPrev(), hasNext())
+            .footer({"Up: exit; Down: enter", "< previous; > next"});
     } else {
-        Display::Instance.drawOption(_name.c_str(), "This menu is empty", false, false);
-        Display::Instance.drawFooter("Press Up to go back");
+        Display::Instance.draw()
+            .title(_name.c_str())
+            .nav("This menu is empty", false, false)
+            .footer({"Press Up to go back"});
     }
 }
 

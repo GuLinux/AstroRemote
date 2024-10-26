@@ -111,14 +111,15 @@ template<typename T, typename F> void parseReply(const char *reply, const char *
 
 void MyFP2Client::onReceive(void* arg, AsyncClient* client, void *data, size_t len) {
     Log.traceln("Received reply: len=%d", len);
-    char *reply = (char*) data;
+    char reply[len+1]{0};
+    strncpy(reply, (char*)data, len);
     for(size_t index=0; index<len; index++) {
         char dbgBuf[40];
 
         sprintf(dbgBuf, "[%05d] %03d 0x%02x %c", index, reply[index], reply[index], reply[index]);
         Log.traceln(dbgBuf);
     }
-
+    Log.traceln("Reply parsed: %s, reply command=%c", reply, reply[0]);
     if(reply[0] == 'E') {
         if(strcmp(reply, "EOK#") == 0) {
             if(!_status != Connected) {
