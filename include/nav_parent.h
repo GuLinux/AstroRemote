@@ -4,7 +4,7 @@
 
 class Nav::MenuEntry::Parent : public Nav::MenuEntry {
 public:
-    Parent(const String &name, MenuEntry *parent=nullptr);
+    Parent(const String &name);
 
     Parent *addChild(MenuEntry *child);
     void draw() override;

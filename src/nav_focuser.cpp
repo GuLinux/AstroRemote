@@ -8,8 +8,8 @@
 #define LOGPREFIX "[Nav::MenuEntry] "
 #define STEPS_MULTIPLIER 10
 
-Nav::MenuEntry::Focuser::Focuser(const String &name, const String &address, uint16_t port, MenuEntry *parent)
-    : MenuEntry{name, parent}, client{address, port} {
+Nav::MenuEntry::Focuser::Focuser(const String &name, const String &address, uint16_t port)
+    : MenuEntry{name}, client{address, port} {
         Log.infoln(LOGPREFIX "Creating focuser: name=%s, address=%s:%d", name.c_str(), address, port);
         client
             .onConnected([this](){ draw(); })

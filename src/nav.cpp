@@ -26,13 +26,19 @@ Nav::Nav() {
 void Nav::setup() {
     Log.traceln(LOGPREFIX "Setup");
     root = new MenuEntry::Parent("Main Menu");
-    MenuEntry::Parent *focusers = new MenuEntry::Parent("Focusers",root);
-    MenuEntry::Parent *options = new MenuEntry::Parent("Options", root);
+    
+    MenuEntry::Parent *options = new MenuEntry::Parent("Options");
 
-    for(const Settings::Device &focuser: Settings::Instance.focusers()) {
-        focusers->addChild(new MenuEntry::Focuser(focuser.name, focuser.address, focuser.port, focusers));
+    if(Settings::Instance.focusers().size() > 0) {
+        MenuEntry::Parent *focusers = new MenuEntry::Parent("Focusers");
+        for(const Settings::Device &focuser: Settings::Instance.focusers()) {
+            focusers->addChild(new MenuEntry::Focuser(focuser.name, focuser.address, focuser.port));
+        }
+        root->addChild(focusers);
     }
-    options->addChild((new MenuEntry::Functional("WiFi Info", options))
+    
+
+    options->addChild((new MenuEntry::Functional("WiFi Info"))
         ->on([](){
             char ipLine[256];
             char ssidLine[256];
@@ -45,7 +51,7 @@ void Nav::setup() {
         }, MenuEntry::Functional::OnEnter)
         ->on([this, options](){ this->navigate(options); }, MenuEntry::Functional::Center)
     );
-    options->addChild((new MenuEntry::Functional("Restart", options))
+    options->addChild((new MenuEntry::Functional("Restart"))
         ->on([](){
             Display::Instance.draw()
                 .title("Restart")
@@ -55,14 +61,14 @@ void Nav::setup() {
         ->on([](){ ESP.restart(); }, MenuEntry::Functional::Center)
         ->on([this, options](){ navigate(options); }, MenuEntry::Functional::Up)
     );
-    options->addChild((new MenuEntry::Functional("Sleep", options))
+    options->addChild((new MenuEntry::Functional("Sleep"))
         ->on([this](){
             Log.traceln(LOGPREFIX "Sleeping via menu");
             this->sleep();
         }, MenuEntry::Functional::OnEnter)
     );
     
-    MenuEntry::Functional *reconnectWiFi = (new MenuEntry::Functional("Reconnect WiFi", options))
+    MenuEntry::Functional *reconnectWiFi = (new MenuEntry::Functional("Reconnect WiFi"))
         ->on([this](){
             Display::Instance.draw().title("WiFi Connecting").message({"Please wait..."});
             Log.infoln("Reconnecting WiFi");
@@ -70,7 +76,7 @@ void Nav::setup() {
         }, MenuEntry::Functional::OnEnter);
     
     options->addChild(reconnectWiFi);
-    MenuEntry::Functional *wifiDisconnectedMenu = (new MenuEntry::Functional("WiFi Offline", nullptr))
+    MenuEntry::Functional *wifiDisconnectedMenu = (new MenuEntry::Functional("WiFi Offline"))
         ->on([this, reconnectWiFi](){
             this->navigate(reconnectWiFi);
         }, MenuEntry::Functional::Center)
@@ -82,7 +88,7 @@ void Nav::setup() {
         ->on([this](){ this->sleep(); }, MenuEntry::Functional::Up)
         ->on([](){ ESP.restart(); }, MenuEntry::Functional::Down);
     
-    root->addChild(focusers)->addChild(options);
+    root->addChild(options);
     WiFiManager::Instance.setOnConnectedCallback([this](){
         Display::Instance.draw().title("WiFi").message({"Connected to", WiFi.SSID().c_str()});
         this->oneshotTask = std::make_unique<Task>(5'000, TASK_ONCE, [this](){ this->navigate(root); }, &Global::scheduler, true);

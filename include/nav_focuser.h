@@ -9,7 +9,7 @@
 
 class Nav::MenuEntry::Focuser: public Nav::MenuEntry {
 public:
-    Focuser(const String &name, const String &address, uint16_t port, MenuEntry *parent);
+    Focuser(const String &name, const String &address, uint16_t port);
     void draw() override;
     void onButton(Buttons::Button button, Buttons::Mode mode);
     void onEnter() override;

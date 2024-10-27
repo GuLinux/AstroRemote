@@ -2,11 +2,12 @@
 
 
 
-Nav::MenuEntry::Parent::Parent(const String &name, MenuEntry * parent) : MenuEntry{name, parent} {
+Nav::MenuEntry::Parent::Parent(const String &name) : MenuEntry{name} {
 }
 
 Nav::MenuEntry::Parent *Nav::MenuEntry::Parent::addChild(MenuEntry *child) {
     this->children.push_back(child);
+    child->setParent(this);
     return this;
 }
 

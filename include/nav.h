@@ -22,6 +22,7 @@ private:
     public:
         const String name() const { return _name; };
         MenuEntry *parent() const { return _parent; };
+        void setParent(MenuEntry *parent) { this->_parent = parent; }
         virtual void draw() = 0;
         virtual void onButton(Buttons::Button button, Buttons::Mode mode) = 0;
         virtual void onEnter() {}
@@ -30,10 +31,10 @@ private:
         class Focuser;
         class Functional;
     protected:
-        MenuEntry(const String &name, MenuEntry *parent=nullptr) : _name{name}, _parent{parent} {}
+        MenuEntry(const String &name) : _name{name} {}
     private:
         const String _name;
-        MenuEntry *_parent;
+        MenuEntry *_parent = nullptr;
     };
     MenuEntry *menuEntry = nullptr;
     MenuEntry::Parent * root;
