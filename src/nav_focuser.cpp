@@ -35,6 +35,7 @@ Nav::MenuEntry::Focuser::Focuser(const String &name, const String &address, uint
         ;
         new Task(1000, TASK_FOREVER, [this](){
             if(client.status() != MyFP2Client::Connected) {
+                // Log.traceln(LOGPREFIX "Task: Focuser disconnected");
                 return;
             }
             if(!waitingStatus) {
@@ -136,6 +137,8 @@ void Nav::MenuEntry::Focuser::onExit() {
     Log.infoln(LOGPREFIX "focuser: onExit");
     client.onDisconnected({});
     client.disconnect();
+    waitingPosition = false;
+    waitingStatus = false;
 }
 
 void Nav::MenuEntry::Focuser::connect()

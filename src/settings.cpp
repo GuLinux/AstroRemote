@@ -11,12 +11,12 @@
 
 Settings &Settings::Instance = *new Settings();
 
-Settings::Settings() : _wifiSettings(prefs, LittleFS, "FocuserRemote") {
+Settings::Settings() : _wifiSettings(prefs, LittleFS, "AstroRemote") {
 }
 
 
 void Settings::setup() {
-    prefs.begin("RemoteFocuser");
+    prefs.begin("AstroRemote");
     _wifiSettings.setup();
     load();
     Log.infoln("Finished loading settings: ");
