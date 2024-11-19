@@ -1,7 +1,7 @@
 #include "nav.h"
-#include "myfp2client.h"
-#include "display.h"
-#include "pinout.h"
+#include "protocols/myfp2client.h"
+#include "hardware/display.h"
+#include "hardware/pinout.h"
 #include "settings.h"
 
 #include <ArduinoLog.h>

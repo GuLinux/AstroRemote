@@ -1,10 +1,11 @@
-#include "buttons.h"
 #include <ArduinoLog.h>
-#include "myfp2client.h"
-#include "pinout.h"
-#include "display.h"
-#include "nav.h"
 #include <unordered_map>
+
+#include "pinout.h"
+#include "buttons.h"
+#include "display.h"
+
+#include "nav/nav.h"
 
 using namespace std::placeholders;
 

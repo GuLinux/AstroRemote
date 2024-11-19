@@ -8,16 +8,15 @@
 #include <ArduinoJson.h>
 #include <asyncbufferedtcplogger.h>
 
-#include "pinout.h"
+#include "hardware/pinout.h"
 #include <Wire.h>
 
 
-#include "myfp2client.h"
-#include "nav.h"
-#include "display.h"
+#include "hardware/display.h"
 #include "wifi-setup.h"
+#include "nav/nav.h"
 #include "settings.h"
-#include "buttons.h"
+#include "hardware/buttons.h"
 #include "globals.h"
 #include <wifimanager.h>
 

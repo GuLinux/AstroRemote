@@ -1,6 +1,5 @@
 #pragma once
 #include "nav.h"
-#include "display.h"
 
 class Nav::MenuEntry::Parent : public Nav::MenuEntry {
 public:

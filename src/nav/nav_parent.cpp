@@ -1,5 +1,5 @@
 #include "nav_parent.h"
-
+#include "hardware/display.h"
 
 
 Nav::MenuEntry::Parent::Parent(const String &name) : MenuEntry{name} {

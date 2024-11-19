@@ -7,7 +7,7 @@
 #include <WString.h>
 #include <TaskSchedulerDeclarations.h>
 #include <memory>
-#include "buttons.h"
+#include "hardware/buttons.h"
 
 
 class Nav {

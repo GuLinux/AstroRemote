@@ -1,6 +1,7 @@
 #include "nav_focuser.h"
 #include <TaskSchedulerDeclarations.h>
 #include "globals.h"
+#include "hardware/display.h"
 
 
 #include <ArduinoLog.h>

@@ -1,7 +1,6 @@
 #pragma once
 #include "nav.h"
-#include "display.h"
-#include "myfp2client.h"
+#include "protocols/myfp2client.h"
 
 #include <WString.h>
 #include <unistd.h>
