@@ -10,7 +10,7 @@ public:
     Functional(const String &name);
     using Callback = std::function<void()>;
     void draw() override;
-    void onButton(Buttons::Button button, Buttons::Mode mode);
+    void onButton(Buttons::Button button, Buttons::Mode mode) override;
     void onEnter() override;
     void onExit() override;
 

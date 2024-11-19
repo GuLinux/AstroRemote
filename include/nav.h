@@ -30,6 +30,7 @@ private:
         class Parent;
         class Focuser;
         class Functional;
+        class INDI;
     protected:
         MenuEntry(const String &name) : _name{name} {}
     private:

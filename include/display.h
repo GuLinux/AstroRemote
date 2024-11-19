@@ -3,11 +3,11 @@
 
 #include <U8g2lib.h>
 #include <memory>
+#include "config.h"
 
 class Display {
 public:
     class Draw;
-    using HardwareDisplay = U8G2_SH1106_128X64_NONAME_F_HW_I2C;
     static Display &Instance;
     Display();
     void setup();
@@ -15,7 +15,7 @@ public:
     Draw draw();
     class Draw {
     public:
-        Draw(HardwareDisplay &display);
+        Draw(U8G2_DISPLAY_CLASS &display);
         Draw(Draw &other);
         ~Draw();
         Draw &title(const char *title);
@@ -27,13 +27,13 @@ public:
         Draw &focuser(uint32_t position, uint16_t steps, uint16_t multipliedSteps, bool moving);
     private:
         void drawCentered(const char *text, int y);
-        HardwareDisplay *display;
+        U8G2_DISPLAY_CLASS *display;
         bool hasTitle = false;
     };
 
 private:
     
     void clear();
-    HardwareDisplay display;
+    U8G2_DISPLAY_CLASS display;
 };
 #endif

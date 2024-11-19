@@ -48,7 +48,7 @@ Display::Draw Display::draw()
     return Draw(display);
 }
 
-Display::Draw::Draw(HardwareDisplay &display) : display{&display} {
+Display::Draw::Draw(U8G2_DISPLAY_CLASS &display) : display{&display} {
     Log.traceln(LOGPREFIX "Default constructor with display");
     display.clearBuffer();
     

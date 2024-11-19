@@ -11,7 +11,7 @@ class Nav::MenuEntry::Focuser: public Nav::MenuEntry {
 public:
     Focuser(const String &name, const String &address, uint16_t port);
     void draw() override;
-    void onButton(Buttons::Button button, Buttons::Mode mode);
+    void onButton(Buttons::Button button, Buttons::Mode mode) override;
     void onEnter() override;
     void onExit() override;
 private:
