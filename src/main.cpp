@@ -75,8 +75,6 @@ void setup() {
   Nav::Instance.setup();
   WiFiManager::Instance.setup(Global::scheduler, &Settings::Instance.wifiSettings());
  
-//   uint8_t wifiSuccessful = setupWiFi(wifiMulti);
-//   Log.infoln("WiFi connected: %d, setting up OTA and buttons", wifiSuccessful);
   ArduinoOTAManager::Instance.setup();
   Buttons::Instance.setup();
 
