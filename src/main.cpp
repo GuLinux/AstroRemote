@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <WiFiMulti.h>
 #include <ArduinoLog.h>
 #include <arduinoota-manager.h>
 #include <ArduinoOTA.h>
@@ -19,15 +18,17 @@
 #include "hardware/buttons.h"
 #include "globals.h"
 #include <wifimanager.h>
+#include "webserver.h"
 
 using namespace GuLinux;
 
 void serialNav(char c);
-WiFiMulti wifiMulti;
 AsyncBufferedTCPLogger bufferedLogger(9911, 100, [](void*, AsyncClient*, void *data, size_t len){
   serialNav(static_cast<char*>(data)[0]);
 });
 Scheduler Global::scheduler;
+WebServer webserver;
+
 
 
 #define BTN_PULLUP true
@@ -77,7 +78,7 @@ void setup() {
  
   ArduinoOTAManager::Instance.setup();
   Buttons::Instance.setup();
-
+  webserver.setup();
 
   Log.infoln("Setup complete");
 }

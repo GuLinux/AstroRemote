@@ -11,11 +11,31 @@
 
 Settings &Settings::Instance = *new Settings();
 
+namespace {
+std::map<String, Settings::Protocol> STRINGS_TO_PROTOCOLS;
+std::map<Settings::Protocol, String> PROTOCOLS_TO_STRINGS;
+std::map<String, Settings::DeviceType> STRINGS_TO_DEVICE_TYPES;
+std::map<Settings::DeviceType, String> DEVICE_TYPES_TO_STRINGS;
+void _map(String protocolName, Settings::Protocol protocol) {
+    STRINGS_TO_PROTOCOLS[protocolName] = protocol;
+    PROTOCOLS_TO_STRINGS[protocol] = protocolName;
+}
+void _map(String devicetypeName, Settings::DeviceType deviceType) {
+    STRINGS_TO_DEVICE_TYPES[devicetypeName] = deviceType;
+    DEVICE_TYPES_TO_STRINGS[deviceType] = devicetypeName;
+}
+
+}
 Settings::Settings() : _wifiSettings(prefs, LittleFS, "AstroRemote") {
 }
 
 
 void Settings::setup() {
+    _map("lx200", LX200);
+    _map("myFP2", MyFP2);
+    _map("focuser", Focuser);
+    _map("telescope", Telescope);
+
     prefs.begin("AstroRemote");
     _wifiSettings.setup();
     load();
@@ -42,22 +62,49 @@ void Settings::load() {
     loadConfigurationFile();
 }
 
-void Settings::loadDefaults() {
-    #ifdef CONFIG_SIMULATOR
+void Settings::loadDefaults()
+{
+#ifdef CONFIG_SIMULATOR
     _wifiSettings.setStationConfiguration(0, "Wokwi-GUEST", "");
     _focusers.push_back({"MyFP2ESP32", DeviceType::Focuser, Protocol::MyFP2, "myfp2esp32.lan", 2020});
     _indiServers.push_back({"BlueBox", "bluebox.lan"});
-    #else
+#else
     _wifiSettings.loadDefaults();
     loadConfigurationFile();
     #endif
 }
 
+void Settings::asJson(JsonVariant &document) {
+    Log.traceln(LOGPREFIX "Converting settings to json");
+    JsonObject root = document.to<JsonObject>();
+    JsonArray devices = root["devices"].to<JsonArray>();
+    Log.traceln(LOGPREFIX "Adding devices");
+    const auto mapDevice = [&devices] (const Device &device) {
+        auto deviceObject = devices.add<JsonObject>();
+        Log.traceln(LOGPREFIX " * adding device %s", device.name);
+        deviceObject["name"] = device.name;
+        deviceObject["type"] = DEVICE_TYPES_TO_STRINGS.at(device.type);
+        deviceObject["protocol"] = PROTOCOLS_TO_STRINGS.at(device.protocol);
+        deviceObject["address"] = device.address;
+        deviceObject["port"] = device.port;
+    };
+    std::for_each(_focusers.begin(), _focusers.end(), mapDevice); 
+    std::for_each(_telescopes.begin(), _telescopes.end(), mapDevice); 
+    JsonArray indiServers = root["INDI Servers"].to<JsonArray>();
+    Log.traceln(LOGPREFIX "Adding INDI servers");
+    std::for_each(_indiServers.begin(), _indiServers.end(), [&indiServers](const INDIServer &indiServer) {
+        Log.traceln(LOGPREFIX " * adding INDI server %s", indiServer.name);
+        auto indiServerObject = indiServers.add<JsonObject>();
+        indiServerObject["name"] = indiServer.name;
+        indiServerObject["address"] = indiServer.address;
+        indiServerObject["port"] = indiServer.port;
+    });
+}
+
+
 void Settings::loadConfigurationFile() {
     _focusers.clear();
     _telescopes.clear();
-    static const std::map<String, Protocol> protocols { {"lx200", LX200}, {"myFP2", MyFP2}};
-    static const std::map<String, DeviceType> deviceTypes{ {"focuser", Focuser}, {"telescope", Telescope}};
     if(!LittleFS.exists(CONFIGURATION_FILE_PATH)) {
         Log.infoln(LOGPREFIX CONFIGURATION_FILE_PATH " not found, skipping loading focusers list");
         return;
@@ -73,8 +120,8 @@ void Settings::loadConfigurationFile() {
     for(JsonObject jsonDevice: configDocument["devices"].as<JsonArray>()) {
         Device device{
             jsonDevice["name"],
-            (deviceTypes.count(jsonDevice["type"]) ? deviceTypes.at(jsonDevice["type"]) : UnknownDevice),
-            (protocols.count(jsonDevice["protocol"]) ? protocols.at(jsonDevice["protocol"]) : UnknownProtocol),
+            (STRINGS_TO_DEVICE_TYPES.count(jsonDevice["type"]) ? STRINGS_TO_DEVICE_TYPES.at(jsonDevice["type"]) : UnknownDevice),
+            (STRINGS_TO_PROTOCOLS.count(jsonDevice["protocol"]) ? STRINGS_TO_PROTOCOLS.at(jsonDevice["protocol"]) : UnknownProtocol),
             jsonDevice["address"],
             jsonDevice["port"],
         };

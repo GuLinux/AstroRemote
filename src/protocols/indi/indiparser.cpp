@@ -1,12 +1,11 @@
 #include "indiparser.h"
 #include <tinyxml2.h>
-#include <iostream>
 #include <set>
 
-std::list<std::string> INDIParser::parseDevices(const char *xml, std::size_t len)
+std::list<const char*> INDIParser::parseDevices(const char *xml, std::size_t len)
 {
-    std::set<std::string> keys;
-    std::list<std::string> out;
+    std::set<const char*> keys;
+    std::list<const char*> out;
 
     tinyxml2::XMLDocument xmlDoc;
     xmlDoc.Parse(xml, len);

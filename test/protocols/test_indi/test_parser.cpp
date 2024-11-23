@@ -39,8 +39,9 @@ indi_simulator_telescope
 </defTextVector>
   )_";
   auto devices = parser.parseDevices(xml, strlen(xml));
-  std::list<std::string> expected{"CCD Simulator", "Telescope Simulator"};
-  ASSERT_EQ(devices, expected);
+  ASSERT_EQ(devices.size(), 2);
+  ASSERT_STREQ(devices.front(), "CCD Simulator");
+  ASSERT_STREQ(devices.back(), "Telescope Simulator");
 }
 
 #if defined(ARDUINO)

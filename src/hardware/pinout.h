@@ -8,7 +8,7 @@
 #define RIGHTBTN 21
 #define UPLEFT 7
 #define UPRIGHT 20
-#define DOWNLEFT 4
+#define DOWNLEFT 6
 #define DOWNRIGHT 0
 
 #define I2C_SDA 10

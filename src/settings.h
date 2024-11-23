@@ -2,6 +2,7 @@
 #define FOCUSER_SETTINGS_H
 #include <Preferences.h>
 #include <wifisettings.h>
+#include <ArduinoJson.h>
 #include <vector>
 
 class Settings {
@@ -35,6 +36,7 @@ public:
     Devices telescopes() const { return _telescopes; }
     INDIServers indiServers() const { return _indiServers; }
     GuLinux::WiFiSettings &wifiSettings() { return _wifiSettings; }
+    void asJson(JsonVariant &document);
 private:
     Preferences prefs;
     GuLinux::WiFiSettings _wifiSettings;
