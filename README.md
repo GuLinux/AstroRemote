@@ -47,6 +47,8 @@ In addition to the microcontroller, you'll also need:
  - Pull down resistors where applicable (some ESP32 pins don't have internal pull down)
  - A power source (ideally batteries + step up or down modules, depending on your choice)
 
+PCB Layout available at [oshwlab.com/marco.gulino/focuser-remote](https://oshwlab.com/marco.gulino/focuser-remote)
+
 ## Software requirement
 
 This project is built and configured with Platformio, so that all libraries are managed directly by the platform.
