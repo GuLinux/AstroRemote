@@ -43,8 +43,14 @@ void Settings::load() {
 }
 
 void Settings::loadDefaults() {
+    #ifdef CONFIG_SIMULATOR
+    _wifiSettings.setStationConfiguration(0, "Wokwi-GUEST", "");
+    _focusers.push_back({"MyFP2ESP32", DeviceType::Focuser, Protocol::MyFP2, "myfp2esp32.lan", 2020});
+    _indiServers.push_back({"BlueBox", "bluebox.lan"});
+    #else
     _wifiSettings.loadDefaults();
     loadConfigurationFile();
+    #endif
 }
 
 void Settings::loadConfigurationFile() {

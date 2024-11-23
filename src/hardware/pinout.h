@@ -13,4 +13,16 @@
 
 #define I2C_SDA 10
 #define I2C_SCL 9
+
+#ifdef CONFIG_SIMULATOR
+#undef RIGHTBTN
+#undef UPRIGHT
+#define RIGHTBTN 5
+#define UPRIGHT 6
+
+#endif
+#if __has_include("pinout_custom.h")
+#include "pinout_custom.h"
+#endif
+
 #endif

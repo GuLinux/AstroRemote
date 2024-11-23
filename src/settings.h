@@ -27,7 +27,7 @@ public:
     struct INDIServer {
         String name;
         String address;
-        uint16_t port;
+        uint16_t port = 7624;
     };
     using Devices = std::vector<Device>;
     using INDIServers = std::vector<INDIServer>;

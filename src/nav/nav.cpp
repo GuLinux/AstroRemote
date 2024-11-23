@@ -9,6 +9,7 @@
 #include "nav_parent.h"
 #include "nav_focuser.h"
 #include "nav_functional.h"
+#include "nav_indi.h"
 #include "wifimanager.h"
 #include "globals.h"
 
@@ -29,6 +30,14 @@ void Nav::setup() {
     
     MenuEntry::Parent *options = new MenuEntry::Parent("Options");
 
+    if(Settings::Instance.indiServers().size() > 0) {
+        MenuEntry::Parent *indiServers= new MenuEntry::Parent("INDI");
+        for(const Settings::INDIServer &server: Settings::Instance.indiServers()) {
+            indiServers->addChild(new MenuEntry::INDI(server));
+        }
+        root->addChild(indiServers);
+
+    }
     if(Settings::Instance.focusers().size() > 0) {
         MenuEntry::Parent *focusers = new MenuEntry::Parent("Focusers");
         for(const Settings::Device &focuser: Settings::Instance.focusers()) {
