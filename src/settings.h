@@ -4,19 +4,21 @@
 #include <wifisettings.h>
 #include <ArduinoJson.h>
 #include <vector>
+#include <enum.h>
 
+namespace {
+    BETTER_ENUM(_Settings_Protocol, uint8_t, MyFP2, LX200, UnknownProtocol)
+    BETTER_ENUM(_Settings_DeviceType, uint8_t, Focuser, Telescope, UnknownDevice)
+}
 class Settings {
 public:
+    using Protocol = _Settings_Protocol;
+    using DeviceType = _Settings_DeviceType;
     static Settings &Instance;
     Settings();
     void setup();
     void load();
-    enum Protocol {
-        MyFP2, LX200, UnknownProtocol
-    };
-    enum DeviceType {
-        Focuser, Telescope, UnknownDevice
-    };
+    
     struct Device {
         String name;
         DeviceType type;

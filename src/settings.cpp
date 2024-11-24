@@ -11,31 +11,10 @@
 
 Settings &Settings::Instance = *new Settings();
 
-namespace {
-std::map<String, Settings::Protocol> STRINGS_TO_PROTOCOLS;
-std::map<Settings::Protocol, String> PROTOCOLS_TO_STRINGS;
-std::map<String, Settings::DeviceType> STRINGS_TO_DEVICE_TYPES;
-std::map<Settings::DeviceType, String> DEVICE_TYPES_TO_STRINGS;
-void _map(String protocolName, Settings::Protocol protocol) {
-    STRINGS_TO_PROTOCOLS[protocolName] = protocol;
-    PROTOCOLS_TO_STRINGS[protocol] = protocolName;
-}
-void _map(String devicetypeName, Settings::DeviceType deviceType) {
-    STRINGS_TO_DEVICE_TYPES[devicetypeName] = deviceType;
-    DEVICE_TYPES_TO_STRINGS[deviceType] = devicetypeName;
-}
-
-}
 Settings::Settings() : _wifiSettings(prefs, LittleFS, "AstroRemote") {
 }
 
-
 void Settings::setup() {
-    _map("lx200", LX200);
-    _map("myFP2", MyFP2);
-    _map("focuser", Focuser);
-    _map("telescope", Telescope);
-
     prefs.begin("AstroRemote");
     _wifiSettings.setup();
     load();
@@ -83,8 +62,8 @@ void Settings::asJson(JsonVariant &document) {
         auto deviceObject = devices.add<JsonObject>();
         Log.traceln(LOGPREFIX " * adding device %s", device.name);
         deviceObject["name"] = device.name;
-        deviceObject["type"] = DEVICE_TYPES_TO_STRINGS.at(device.type);
-        deviceObject["protocol"] = PROTOCOLS_TO_STRINGS.at(device.protocol);
+        deviceObject["type"] = device.type._to_string();
+        deviceObject["protocol"] = device.protocol._to_string();
         deviceObject["address"] = device.address;
         deviceObject["port"] = device.port;
     };
@@ -118,27 +97,29 @@ void Settings::loadConfigurationFile() {
         return;
     }
     for(JsonObject jsonDevice: configDocument["devices"].as<JsonArray>()) {
+        auto deviceType = DeviceType::_from_string_nocase_nothrow(jsonDevice["type"]);
+        auto protocol = Protocol::_from_string_nocase_nothrow(jsonDevice["protocol"]);
         Device device{
             jsonDevice["name"],
-            (STRINGS_TO_DEVICE_TYPES.count(jsonDevice["type"]) ? STRINGS_TO_DEVICE_TYPES.at(jsonDevice["type"]) : UnknownDevice),
-            (STRINGS_TO_PROTOCOLS.count(jsonDevice["protocol"]) ? STRINGS_TO_PROTOCOLS.at(jsonDevice["protocol"]) : UnknownProtocol),
+            deviceType ? deviceType.value() : +DeviceType::UnknownDevice,
+            protocol ? protocol.value() : +Protocol::UnknownProtocol,
             jsonDevice["address"],
             jsonDevice["port"],
         };
         switch(device.type) {
-            case Focuser:
+            case DeviceType::Focuser:
                 _focusers.push_back(device);
                 break;
-            case Telescope:
+            case DeviceType::Telescope:
                 _telescopes.push_back(device);
                 break;
             default:
                 Log.errorln(LOGPREFIX "Unknown device found: name=%s, type=%s", jsonDevice["name"], jsonDevice["type"]);
                 break;
         }
-        if(device.type != UnknownDevice) Log.infoln("Added device: type=%s, protocol=%s, name=%s, address=%s, port=%d",
+        if(device.type != +DeviceType::UnknownDevice) Log.infoln("Added device: type=%s, protocol=%s, name=%s, address=%s, port=%d",
             jsonDevice["type"].as<String>().c_str(),
-            (device.protocol != UnknownProtocol ? jsonDevice["protocol"].as<String>().c_str() : "unknown"),
+            (device.protocol != +Protocol::UnknownProtocol ? jsonDevice["protocol"].as<String>().c_str() : "unknown"),
             device.name.c_str(),
             device.address.c_str(),
             device.port
