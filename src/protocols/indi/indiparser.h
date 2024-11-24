@@ -3,10 +3,11 @@
 
 #include <tinyxml2.h>
 #include <list>
+#include "indidevice.h"
 
 class INDIParser {
 public:
-    std::list<const char*> parseDevices(const char *xml, std::size_t len);
+    std::list<INDIDevice> parseDevices(const char *xml, std::size_t len);
 };
 
 #endif

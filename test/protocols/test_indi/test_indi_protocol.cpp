@@ -7,6 +7,19 @@
 // TEST(...)
 // TEST_F(...)
 
+void PrintTo(const INDIDevice& device, std::ostream* os) {
+    *os << "INDIDevice(" << device.name << ", interfaces: [";
+    bool first = true;
+    for(const auto &interface: device.interfaces()) {
+        if(!first) {
+            *os << ", ";
+        } else {
+            first = false;
+        }
+        *os << interface;
+    }
+    *os << "])";
+}
 
 TEST(TestIndiDevice, itShouldStoreNameAndInterfaceAndCompareByStrEquality) {
     INDIDevice device{"foo", INDIDevice::Interface::Telescope};
@@ -75,10 +88,75 @@ indi_simulator_telescope
 </defTextVector>
   )_";
   auto devices = parser.parseDevices(xml, strlen(xml));
-  ASSERT_EQ(devices.size(), 2);
-  ASSERT_STREQ(devices.front(), "CCD Simulator");
-  ASSERT_STREQ(devices.back(), "Telescope Simulator");
+  std::list<INDIDevice> expected {
+    {"CCD Simulator", INDIDevice::Interface::CCD | INDIDevice::Interface::Guider | INDIDevice::Interface::Filter },
+    {"Telescope Simulator", INDIDevice::Interface::Telescope | INDIDevice::Interface::Guider},
+  };
+  ASSERT_EQ(devices, expected);
 }
+
+
+TEST(TestIndiParser, itShouldOnlyParseDriverInfo){
+  INDIParser parser;
+  const char *xml = R"_(
+<defSwitchVector device="CCD Simulator" name="CONNECTION" label="Connection" group="Main Control" state="Idle" perm="rw" rule="OneOfMany" timeout="60" timestamp="2024-11-24T16:15:28">
+    <defSwitch name="CONNECT" label="Connect">
+Off
+    </defSwitch>
+    <defSwitch name="DISCONNECT" label="Disconnect">
+On
+    </defSwitch>
+</defSwitchVector>
+<defTextVector device="CCD Simulator" name="DRIVER_INFO" label="Driver Info" group="General Info" state="Idle" perm="ro" timeout="60" timestamp="2024-11-24T16:15:28">
+    <defText name="DRIVER_NAME" label="Name">
+CCD Simulator
+    </defText>
+    <defText name="DRIVER_EXEC" label="Exec">
+indi_simulator_ccd
+    </defText>
+    <defText name="DRIVER_VERSION" label="Version">
+1.0
+    </defText>
+    <defText name="DRIVER_INTERFACE" label="Interface">
+22
+    </defText>
+</defTextVector>
+<defNumberVector device="CCD Simulator" name="POLLING_PERIOD" label="Polling" group="Options" state="Ok" perm="rw" timeout="0" timestamp="2024-11-24T16:15:28">
+    <defNumber name="PERIOD_MS" label="Period (ms)" format="%.f" min="10" max="600000" step="1000">
+1000
+    </defNumber>
+</defNumberVector>
+<defSwitchVector device="CCD Simulator" name="DEBUG" label="Debug" group="Options" state="Ok" perm="rw" rule="OneOfMany" timeout="0" timestamp="2024-11-24T16:15:28">
+    <defSwitch name="ENABLE" label="Enable">
+Off
+    </defSwitch>
+    <defSwitch name="DISABLE" label="Disable">
+On
+    </defSwitch>
+</defSwitchVector>
+<defSwitchVector device="CCD Simulator" name="CONFIG_PROCESS" label="Configuration" group="Options" state="Idle" perm="rw" rule="AtMostOne" timeout="0" timestamp="2024-11-24T16:15:28">
+    <defSwitch name="CONFIG_LOAD" label="Load">
+Off
+    </defSwitch>
+    <defSwitch name="CONFIG_SAVE" label="Save">
+Off
+    </defSwitch>
+    <defSwitch name="CONFIG_DEFAULT" label="Default">
+Off
+    </defSwitch>
+    <defSwitch name="CONFIG_PURGE" label="Purge">
+Off
+    </defSwitch>
+</defSwitchVector>
+
+  )_";
+  auto devices = parser.parseDevices(xml, strlen(xml));
+  std::list<INDIDevice> expected {
+    {"CCD Simulator", INDIDevice::Interface::CCD | INDIDevice::Interface::Guider | INDIDevice::Interface::Filter },
+  };
+  ASSERT_EQ(devices, expected);
+}
+
 
 
 #if defined(ARDUINO)

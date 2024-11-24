@@ -36,12 +36,5 @@ void INDIClient::onData(void *, AsyncClient *, void *data, size_t len) {
 
 void INDIClient::parseDevices(const char *data, size_t len) {
     Log.traceln(LOGSCOPE "**** Parsing devices list");
-    std::list<const char*> devices = parser.parseDevices(data, len);
-    // tinyxml2::XMLDocument xmlDoc;
-    // xmlDoc.Parse(data);
-    // tinyxml2::XMLElement* element = xmlDoc.FirstChildElement();
-    // while(element) {
-    //     Log.traceln("Element: %s", element->Name());
-    //     element = element->NextSiblingElement();
-    // }
+    std::list<INDIDevice> devices = parser.parseDevices(data, len);
 }

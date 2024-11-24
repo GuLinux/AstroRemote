@@ -2,6 +2,7 @@
 #define SRC_INDI_DEVICE
 #include <set>
 #include <enum.h>
+#include <functional>
 #include <algorithm>
 
 using namespace std::placeholders;
