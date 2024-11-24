@@ -1,10 +1,46 @@
 #include <gtest/gtest.h>
 #include "protocols/indi/indiparser.h"
+#include "protocols/indi/indidevice.h"
 // uncomment line below if you plan to use GMock
 // #include <gmock/gmock.h>
 
 // TEST(...)
 // TEST_F(...)
+
+
+TEST(TestIndiDevice, itShouldStoreNameAndInterfaceAndCompareByStrEquality) {
+    INDIDevice device{"foo", INDIDevice::Interface::Telescope};
+    char differentPointer[4];
+    strcpy(differentPointer, device.name);
+    INDIDevice anotherDevice{differentPointer, INDIDevice::Interface::Telescope};
+    ASSERT_NE(device.name, differentPointer);
+    ASSERT_NE(device.name, anotherDevice.name);
+    ASSERT_EQ(device, anotherDevice);
+}
+
+TEST(TestIndiDevice, itShouldExtractTheRightInterfacesWithSingleInterface) {
+    INDIDevice device{"foo", INDIDevice::Interface::CCD};
+
+    ASSERT_TRUE(device.is(INDIDevice::Interface::CCD));
+    ASSERT_FALSE(device.is(INDIDevice::Interface::Telescope));
+
+    std::set<INDIDevice::Interface> expected{INDIDevice::Interface::CCD};
+    ASSERT_EQ(device.interfaces(), expected);
+}
+
+TEST(TestIndiDevice, itShouldExtractTheRightInterfacesWithMultipleInterfaces) {
+    INDIDevice device{"foo", INDIDevice::Interface::CCD | INDIDevice::Interface::Telescope | INDIDevice::Interface::Aux | INDIDevice::Interface::Focuser};
+    
+    ASSERT_TRUE(device.is(INDIDevice::Interface::CCD));
+    ASSERT_TRUE(device.is(INDIDevice::Interface::Telescope));
+    ASSERT_TRUE(device.is(INDIDevice::Interface::Aux));
+    ASSERT_TRUE(device.is(INDIDevice::Interface::Focuser));
+    ASSERT_FALSE(device.is(INDIDevice::Interface::Dome));
+
+    std::set<INDIDevice::Interface> expected{INDIDevice::Interface::CCD, INDIDevice::Interface::Telescope, INDIDevice::Interface::Aux, INDIDevice::Interface::Focuser};
+    ASSERT_EQ(device.interfaces(), expected);
+}
+
 
 TEST(TestIndiParser, itShouldParseDevicesList){
   INDIParser parser;
@@ -43,6 +79,7 @@ indi_simulator_telescope
   ASSERT_STREQ(devices.front(), "CCD Simulator");
   ASSERT_STREQ(devices.back(), "Telescope Simulator");
 }
+
 
 #if defined(ARDUINO)
 #include <Arduino.h>
