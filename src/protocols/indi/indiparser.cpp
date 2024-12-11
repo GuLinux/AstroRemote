@@ -14,7 +14,7 @@ long StringToNumber(const char *text) {
 #endif
 }
 
-#include <iostream>
+// #include <iostream>
 std::list<INDIDevice> INDIParser::parseDevices(const char *xml, std::size_t len)
 {
     std::list<INDIDevice> out;
@@ -22,7 +22,7 @@ std::list<INDIDevice> INDIParser::parseDevices(const char *xml, std::size_t len)
     xmlDoc.Parse(xml, len);
     tinyxml2::XMLElement* element = xmlDoc.FirstChildElement();
     while(element) {
-        std::cerr << "element name: `" << element->Name() << "`\n";
+        // std::cerr << "element name: `" << element->Name() << "`\n";
         if(strcmp(element->Attribute("name"), "DRIVER_INFO") == 0) {
             const char *deviceName = element->Attribute("device");
             uint32_t interfaces = 0;
