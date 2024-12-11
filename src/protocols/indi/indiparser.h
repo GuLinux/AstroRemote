@@ -4,10 +4,13 @@
 #include <tinyxml2.h>
 #include <list>
 #include "indidevice.h"
+#include <vector>
 
 class INDIParser {
 public:
-    std::list<INDIDevice> parseDevices(const char *xml, std::size_t len);
+    bool parseDevices(const char *xml, std::size_t len, INDIDevice::ListInserter inserter);
+private:
+    std::vector<char> buffer;
 };
 
 #endif

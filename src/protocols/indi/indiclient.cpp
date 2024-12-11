@@ -20,21 +20,27 @@ void INDIClient::connect(const Settings::INDIServer &indiServerSettings) {
     client->connect(indiServerSettings.address.c_str(), indiServerSettings.port);
 }
 
-void INDIClient::getDevices() {
+void INDIClient::disconnect() {
+    client->close();
+}
+
+
+void INDIClient::getDevices(const OnDevicesReceived &callback) {
     if (!client->connected()) {
         Log.errorln(LOGSCOPE "getDevices error: client not connected");
         return;
     }
     client->write("<getProperties version='1.7'/>\n");
-    this->dataCb = std::bind(&INDIClient::parseDevices, this, _1, _2);
+    this->_devices.clear();
+    this->dataCb = [callback, this](const char *data, size_t len) {
+        if(parser.parseDevices(data, len, std::back_inserter(this->_devices)) && callback) {
+            callback(this->_devices);
+        }
+    };
 }
 
 void INDIClient::onData(void *, AsyncClient *, void *data, size_t len) {
-    Log.traceln(LOGSCOPE "onData[%d bytes]: %s", len, (char*) data);
+    // Log.traceln(LOGSCOPE "onData[%d bytes]: %s", len, (char*) data);
     if(dataCb) dataCb((const char*) data, len);
 }
 
-void INDIClient::parseDevices(const char *data, size_t len) {
-    Log.traceln(LOGSCOPE "**** Parsing devices list");
-    std::list<INDIDevice> devices = parser.parseDevices(data, len);
-}
