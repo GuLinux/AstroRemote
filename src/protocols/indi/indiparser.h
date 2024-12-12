@@ -8,7 +8,7 @@
 
 class INDIParser {
 public:
-    bool parseDevices(const char *xml, std::size_t len, INDIDevice::ListInserter inserter);
+    void parseDevices(const char *xml, std::size_t len, INDIDevice::ListInserter inserter);
 private:
     std::vector<char> buffer;
 };

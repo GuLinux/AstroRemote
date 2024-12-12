@@ -33,7 +33,8 @@ void INDIClient::getDevices(const OnDevicesReceived &callback) {
     client->write("<getProperties version='1.7'/>\n");
     this->_devices.clear();
     this->dataCb = [callback, this](const char *data, size_t len) {
-        if(parser.parseDevices(data, len, std::back_inserter(this->_devices)) && callback) {
+        parser.parseDevices(data, len, std::back_inserter(this->_devices));
+        if(callback) {
             callback(this->_devices);
         }
     };
