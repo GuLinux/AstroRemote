@@ -29,7 +29,7 @@ void INDIParser::parseDevices(const char *xml, std::size_t len, INDIDevice::List
 {
     Log.infoln("Received XML: size=%d, buffer size=%d", len, buffer.size());
 
-    std::vector<char> working_buffer(buffer.size());
+    Buffer working_buffer(buffer.size());
     std::move(buffer.begin(), buffer.end(), working_buffer.begin());
     buffer.clear();
     std::move(xml, xml+len, std::back_inserter(working_buffer));
@@ -81,7 +81,6 @@ void INDIParser::parseDevices(const char *xml, std::size_t len, INDIDevice::List
     Log.infoln("Filling back buffer: buffer_start=%d, working_buffer size: %d, existing buffer size: %d", chunk_start, working_buffer.size(), buffer.size());
     if(chunk_start< working_buffer.size()) {
         std::move(working_buffer.begin() + chunk_start, working_buffer.end(), std::back_inserter(buffer));
-
     }
 
 }

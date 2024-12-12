@@ -4,6 +4,7 @@
 #include <enum.h>
 #include <functional>
 #include <algorithm>
+#include <stdint.h>
 #ifdef ARDUINO
 #include <WString.h>
 #else
