@@ -8,6 +8,7 @@
 #define SETTINGS_VALUE_VERSION 1
 #define CONFIGURATION_FILE_PATH "/config.json"
 #define LOGPREFIX "[Settings] "
+#define INDI_SERVERS_CONFIG_KEY "INDI Servers"
 
 Settings &Settings::Instance = *new Settings();
 
@@ -69,7 +70,7 @@ void Settings::asJson(JsonVariant &document) {
     };
     std::for_each(_focusers.begin(), _focusers.end(), mapDevice); 
     std::for_each(_telescopes.begin(), _telescopes.end(), mapDevice); 
-    JsonArray indiServers = root["INDI Servers"].to<JsonArray>();
+    JsonArray indiServers = root[INDI_SERVERS_CONFIG_KEY].to<JsonArray>();
     Log.traceln(LOGPREFIX "Adding INDI servers");
     std::for_each(_indiServers.begin(), _indiServers.end(), [&indiServers](const INDIServer &indiServer) {
         Log.traceln(LOGPREFIX " * adding INDI server %s", indiServer.name);
@@ -95,6 +96,13 @@ void Settings::loadConfigurationFile() {
     if(error != DeserializationError::Ok) {
         Log.errorln(LOGPREFIX "Error during deserialisation of " CONFIGURATION_FILE_PATH " : %s (%d)", error.c_str(), error.code());
         return;
+    }
+    for(JsonObject indiServer: configDocument[INDI_SERVERS_CONFIG_KEY].as<JsonArray>()) {
+        _indiServers.push_back({
+            indiServer["name"],
+            indiServer["address"],
+            indiServer["port"],
+        });
     }
     for(JsonObject jsonDevice: configDocument["devices"].as<JsonArray>()) {
         auto deviceType = DeviceType::_from_string_nocase_nothrow(jsonDevice["type"]);

@@ -2,3 +2,4 @@
 version = 1
 firmware = '.pio/build/simulator/firmware.bin'
 elf = '.pio/build/simulator/firmware.elf'
+gdbServerPort = 3333

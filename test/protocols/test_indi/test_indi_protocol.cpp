@@ -24,10 +24,10 @@ void PrintTo(const INDIDevice& device, std::ostream* os) {
 TEST(TestIndiDevice, itShouldStoreNameAndInterfaceAndCompareByStrEquality) {
     INDIDevice device{"foo", INDIDevice::Interface::Telescope};
     char differentPointer[4];
-    strcpy(differentPointer, device.name);
+    strcpy(differentPointer, device.name.c_str());
     INDIDevice anotherDevice{differentPointer, INDIDevice::Interface::Telescope};
-    ASSERT_NE(device.name, differentPointer);
-    ASSERT_NE(device.name, anotherDevice.name);
+    ASSERT_NE(device.name.c_str(), differentPointer);
+    ASSERT_NE(device.name.c_str(), anotherDevice.name.c_str());
     ASSERT_EQ(device, anotherDevice);
 }
 
@@ -87,13 +87,80 @@ indi_simulator_telescope
     </defText>
 </defTextVector>
   )_";
-  auto devices = parser.parseDevices(xml, strlen(xml));
+  INDIDevice::List devices;
+  ASSERT_TRUE(parser.parseDevices(xml, strlen(xml), std::back_inserter(devices)));
   std::list<INDIDevice> expected {
     {"CCD Simulator", INDIDevice::Interface::CCD | INDIDevice::Interface::Guider | INDIDevice::Interface::Filter },
     {"Telescope Simulator", INDIDevice::Interface::Telescope | INDIDevice::Interface::Guider},
   };
   ASSERT_EQ(devices, expected);
 }
+
+TEST(TestIndiParser, itShouldParseDevicesListWhenBufferIsFragmented){
+  INDIParser parser;
+  const char *xml1 = R"_(
+<defTextVector device="CCD Simulator" name="DRIVER_INFO" label="Driver Info" group="General Info" state="Idle" perm="ro" timeout="60" timestamp="2024-11-20T22:53:34">
+    <defText name="DRIVER_NAME" label="Name">
+CCD Simulator
+    </defText>
+    <defText name="DRIVER_EXEC" label="Exec">
+indi_simulator_ccd
+    </defText>
+    <defText name="DRIVER_VERSION" label="Version">
+1.0
+)_";
+  const char *xml2 = R"_(
+    </defText>
+    <defText name="DRIVER_INTERFACE" label="Interface">
+22
+    </defText>
+</defTextVector>
+<defTextVector device="Telescope Simulator" name="DRIVER_INFO" label="Driver Info" group="Connection" state="Idle" perm="ro" timeout="60" timestamp="2024-11-20T22:53:34">
+    <defText name="DRIVER_NAME" label="Name">
+Telescope Simulator
+    </defText>
+    <defText name="DRIVER_EXEC" label="Exec">
+indi_simulator_telescope
+    </defText>
+)_";
+  const char *xml3 = R"_(
+    <defText name="DRIVER_VERSION" label="Version">
+1.0
+    </defText>
+    <defText name="DRIVER_INTERFACE" label="Interface">
+5
+    </defText>
+</defTextVector>
+<defTextVector device="Telescope Simulator2" name="DRIVER_INFO" label="Driver Info" group="Connection" state="Idle" perm="ro" timeout="60" timestamp="2024-11-20T22:53:34">
+  )_";
+  const char *xml4 = R"_(
+    <defText name="DRIVER_NAME" label="Name">
+Telescope Simulator2
+    </defText>
+    <defText name="DRIVER_EXEC" label="Exec">
+indi_simulator_telescope
+    </defText>
+    <defText name="DRIVER_VERSION" label="Version">
+1.0
+    </defText>
+    <defText name="DRIVER_INTERFACE" label="Interface">
+5
+    </defText>
+</defTextVector>
+  )_";
+  INDIDevice::List devices;
+  ASSERT_FALSE(parser.parseDevices(xml1, strlen(xml1), std::back_inserter(devices)));
+  ASSERT_FALSE(parser.parseDevices(xml2, strlen(xml2), std::back_inserter(devices)));
+  ASSERT_FALSE(parser.parseDevices(xml3, strlen(xml3), std::back_inserter(devices)));
+  ASSERT_TRUE(parser.parseDevices(xml4, strlen(xml4), std::back_inserter(devices)));
+  std::list<INDIDevice> expected {
+    {"CCD Simulator", INDIDevice::Interface::CCD | INDIDevice::Interface::Guider | INDIDevice::Interface::Filter },
+    {"Telescope Simulator", INDIDevice::Interface::Telescope | INDIDevice::Interface::Guider},
+    {"Telescope Simulator2", INDIDevice::Interface::Telescope | INDIDevice::Interface::Guider},
+  };
+  ASSERT_EQ(devices, expected);
+}
+
 
 
 TEST(TestIndiParser, itShouldOnlyParseDriverInfo){
@@ -150,7 +217,8 @@ Off
 </defSwitchVector>
 
   )_";
-  auto devices = parser.parseDevices(xml, strlen(xml));
+  INDIDevice::List devices;
+  ASSERT_TRUE(parser.parseDevices(xml, strlen(xml), std::back_inserter(devices)));
   std::list<INDIDevice> expected {
     {"CCD Simulator", INDIDevice::Interface::CCD | INDIDevice::Interface::Guider | INDIDevice::Interface::Filter },
   };

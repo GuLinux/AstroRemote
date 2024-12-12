@@ -4,6 +4,11 @@
 #include <enum.h>
 #include <functional>
 #include <algorithm>
+#ifdef ARDUINO
+#include <WString.h>
+#else
+#include <string>
+#endif
 
 using namespace std::placeholders;
 
@@ -35,7 +40,14 @@ BETTER_ENUM(INDI_Device_Interface, uint32_t,
 
 struct INDIDevice {
     using Interface = INDI_Device_Interface;
-    const char *name;
+    using List = std::list<INDIDevice>;
+    using ListInserter = std::back_insert_iterator<List>;
+
+#ifdef ARDUINO
+    String name;
+#else
+    std::string name;
+#endif
     uint32_t interface;
     bool is(Interface interface) const {
         return this->interface & interface;
@@ -51,7 +63,7 @@ struct INDIDevice {
         return retval;
     }
     bool operator==(const INDIDevice &other) const {
-        return interface == other.interface && strcmp(name, other.name) == 0;
+        return interface == other.interface && name == other.name;
     }
 };
 #endif

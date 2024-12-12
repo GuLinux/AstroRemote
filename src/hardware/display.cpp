@@ -49,13 +49,13 @@ Display::Draw Display::draw()
 }
 
 Display::Draw::Draw(U8G2_DISPLAY_CLASS &display) : display{&display} {
-    Log.traceln(LOGPREFIX "Default constructor with display");
+    // Log.traceln(LOGPREFIX "Default constructor with display");
     display.clearBuffer();
     
 }
 
 Display::Draw::Draw(Draw &other) {
-    Log.traceln(LOGPREFIX "Copy constructor");
+    // Log.traceln(LOGPREFIX "Copy constructor");
 }
 
 Display::Draw::~Draw() {
